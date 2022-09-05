@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function Course() {
   const lectures = [
     "How to init App",
