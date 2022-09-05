@@ -4,6 +4,7 @@ import {
   CourseHero,
   CourseKeypoints,
 } from "@components/course";
+import { BaseLayout } from "@components/layout";
 import React from "react";
 
 export default function Course() {
@@ -17,11 +18,13 @@ export default function Course() {
   ];
 
   return (
-    <div className="relative max-w-7xl mx-auto px-4">
-      <CourseHero />
+    <BaseLayout>
+      <div className="py-4">
+        <CourseHero />
+      </div>
       <CourseKeypoints />
       <CourseCurriculam lectures={lectures} />
       <Modal />
-    </div>
+    </BaseLayout>
   );
 }
