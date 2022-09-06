@@ -5,9 +5,15 @@ import {
   CourseKeypoints,
 } from "@components/course";
 import { BaseLayout } from "@components/layout";
+import { getAllCourses } from "@content/courses/fetcher";
+import { course } from "interfaces/course";
 import React from "react";
 
-export default function Course() {
+interface ICourse {
+  course: course;
+}
+
+const Course: React.FC<ICourse> = ({ course }) => {
   const lectures = [
     "How to init App",
     "How to get a help",
@@ -19,6 +25,7 @@ export default function Course() {
 
   return (
     <BaseLayout>
+      {course.title}
       <div className="py-4">
         <CourseHero />
       </div>
@@ -27,4 +34,27 @@ export default function Course() {
       <Modal />
     </BaseLayout>
   );
+};
+
+export function getStaticPaths() {
+  const { data } = getAllCourses();
+
+  return {
+    paths: data.map((course) => ({
+      params: { slug: course.slug },
+    })),
+    fallback: false,
+  };
 }
+
+export function getStaticProps({ params }) {
+  const { data } = getAllCourses();
+  const course = data.find((c) => c.slug === params.slug);
+  return {
+    props: {
+      course,
+    },
+  };
+}
+
+export default Course;

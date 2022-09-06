@@ -1,20 +1,10 @@
+import { course } from "interfaces/course";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 interface IList {
-  courses: {
-    id: string;
-    type: string;
-    title: string;
-    description: string;
-    coverImage: string;
-    author: string;
-    link: string;
-    slug: string;
-    wsl: string[];
-    createdAt: string;
-  }[];
+  courses: course[];
 }
 
 const List: React.FC<IList> = ({ courses }) => {
