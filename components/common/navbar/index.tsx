@@ -17,16 +17,21 @@ export default function NavBar() {
                   Marketplace
                 </a>
               </Link>
-            </div>
-            <div>
               <Link href="/">
                 <a className="font-medium mr-8 text-gray-500 hover:text-gray-900">
                   Blogs
                 </a>
               </Link>
+            </div>
+            <div>
               <Link href="/">
                 <a className="font-medium mr-8 text-gray-500 hover:text-gray-900">
                   Wishlist
+                </a>
+              </Link>
+              <Link href="/">
+                <a className="px-8 py-3 border rounded-md text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                  Connect
                 </a>
               </Link>
             </div>
