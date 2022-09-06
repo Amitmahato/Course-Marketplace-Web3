@@ -1,4 +1,4 @@
-import { NavBar, Footer } from "@components/common";
+import { NavBar, Footer } from "@components/ui/common";
 import React from "react";
 
 export default function Card({ children }) {
