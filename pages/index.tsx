@@ -10,12 +10,11 @@ export default function Home({ courses }) {
   return (
     <BaseLayout>
       <Hero />
-      {JSON.stringify(courses)}
       {/* <Breadcrumb />
       <Wallet />
       <EthereumRate />
       <OrderCard /> */}
-      <CourseList />
+      <CourseList courses={courses} />
     </BaseLayout>
   );
 }
