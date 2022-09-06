@@ -3,17 +3,26 @@ import { CourseList } from "@components/course";
 import { BaseLayout } from "@components/layout";
 import { OrderCard } from "@components/order";
 import { EthereumRate, Wallet } from "@components/web3";
+import { getAllCourses } from "@content/courses/fetcher";
 import React from "react";
 
-export default function Home() {
+export default function Home({ courses }) {
   return (
     <BaseLayout>
       <Hero />
-      <Breadcrumb />
+      {JSON.stringify(courses)}
+      {/* <Breadcrumb />
       <Wallet />
       <EthereumRate />
-      <OrderCard />
+      <OrderCard /> */}
       <CourseList />
     </BaseLayout>
   );
+}
+
+export function getStaticProps() {
+  const { data } = getAllCourses();
+  return {
+    props: { courses: data },
+  };
 }
