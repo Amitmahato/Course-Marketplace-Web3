@@ -32,8 +32,8 @@ const Course: React.FC<ICourse> = ({ course }) => {
           coverImage={course.coverImage}
         />
       </div>
-      <CourseKeypoints />
-      <CourseCurriculam lectures={lectures} />
+      <CourseKeypoints keypoints={course.wsl} />
+      <CourseCurriculam lectures={lectures} locked={true} />
       <Modal />
     </BaseLayout>
   );

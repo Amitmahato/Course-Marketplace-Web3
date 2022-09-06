@@ -2,9 +2,10 @@ import React from "react";
 
 interface ICurriculam {
   lectures: string[];
+  locked: boolean;
 }
 
-const Curriculam: React.FC<ICurriculam> = ({ lectures }) => {
+const Curriculam: React.FC<ICurriculam> = ({ lectures, locked }) => {
   return (
     <section className="max-w-5xl mx-auto">
       <div className="flex flex-col">
@@ -44,8 +45,14 @@ const Curriculam: React.FC<ICurriculam> = ({ lectures }) => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Unlocked
+                        <span
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            locked
+                              ? "bg-red-100 text-red-800"
+                              : "bg-green-100 text-green-800"
+                          }`}
+                        >
+                          {locked ? "Locked" : "Unlocked"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -53,7 +60,7 @@ const Curriculam: React.FC<ICurriculam> = ({ lectures }) => {
                           href="#"
                           className="text-indigo-600 hover:text-indigo-900"
                         >
-                          Play
+                          {locked ? "Get Access" : "Play"}
                         </a>
                       </td>
                     </tr>
