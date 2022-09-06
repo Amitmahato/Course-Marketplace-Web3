@@ -25,9 +25,12 @@ const Course: React.FC<ICourse> = ({ course }) => {
 
   return (
     <BaseLayout>
-      {course.title}
       <div className="py-4">
-        <CourseHero />
+        <CourseHero
+          title={course.title}
+          description={course.description}
+          coverImage={course.coverImage}
+        />
       </div>
       <CourseKeypoints />
       <CourseCurriculam lectures={lectures} />
