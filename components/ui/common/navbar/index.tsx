@@ -1,12 +1,15 @@
 import { useWeb3 } from "@components/providers";
+import { useAccount } from "@components/web3/hooks/useAccount";
 import Link from "next/link";
 import React from "react";
 import Button from "../button";
 
 export default function NavBar() {
-  const { Connect, isLoading, web3, hooks } = useWeb3();
-  const { account } = hooks.useAccount();
+  const { Connect, isLoading, web3 } = useWeb3();
+  const { account } = useAccount();
+
   console.log("Account: ", account);
+
   return (
     <section>
       <div className="relative pt-6 px-4 sm:px-6 lg:px-8">

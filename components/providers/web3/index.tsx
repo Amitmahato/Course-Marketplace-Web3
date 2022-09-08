@@ -8,7 +8,7 @@ import React, {
 import Web3, { Provider } from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import Contract from "@truffle/contract";
-import { IHooks } from "interfaces/hooks";
+import { IHooks, IUseAccount } from "interfaces/hooks";
 import { DEFAULT_HOOKS, setupHooks } from "./hooks/setupHooks";
 
 interface IWeb3ContextState {
@@ -16,7 +16,7 @@ interface IWeb3ContextState {
   provider: Provider;
   contract: Contract;
   isLoading: boolean;
-  hooks: IHooks;
+  getHooks: () => IHooks;
 }
 
 interface IWeb3ContextMethod {
@@ -29,7 +29,7 @@ const Web3Context = createContext<IWeb3ContextState & IWeb3ContextMethod>({
   contract: null,
   isLoading: true,
   Connect: () => {},
-  hooks: DEFAULT_HOOKS,
+  getHooks: () => DEFAULT_HOOKS,
 });
 
 const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -38,7 +38,7 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
     provider: null,
     contract: null,
     isLoading: true,
-    hooks: DEFAULT_HOOKS,
+    getHooks: () => DEFAULT_HOOKS,
   });
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
           provider,
           contract: null,
           isLoading: false,
-          hooks: setupHooks(web3),
+          getHooks: () => setupHooks(web3),
         });
       } else {
         setWeb3Api((api) => ({
@@ -93,4 +93,9 @@ export default Web3Provider;
 
 export const useWeb3 = () => {
   return useContext(Web3Context);
+};
+
+export const useHooks = (cb: (param: IHooks) => () => IUseAccount) => {
+  const { getHooks } = useWeb3();
+  return cb(getHooks());
 };
