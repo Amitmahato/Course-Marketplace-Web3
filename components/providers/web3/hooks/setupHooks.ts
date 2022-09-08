@@ -24,8 +24,8 @@ import { handler as createUseAccount } from "./useAccount";
 //   },
 // };
 
-export const setupHooks = (web3: Web3): IHooks => {
+export const setupHooks = (web3: Web3, provider: any): IHooks => {
   return {
-    useAccount: createUseAccount(web3),
+    useAccount: createUseAccount(web3, provider),
   };
 };
