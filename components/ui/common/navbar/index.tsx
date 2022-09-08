@@ -2,6 +2,7 @@ import { useWeb3 } from "@components/providers";
 import Link from "next/link";
 import React from "react";
 import Button from "../button";
+
 export default function NavBar() {
   const { Connect, isLoading, web3 } = useWeb3();
   return (
@@ -33,11 +34,16 @@ export default function NavBar() {
                 </a>
               </Link>
               {isLoading ? (
-                <Button onClick={() => {}} title="Loading..." />
+                <Button disabled title="Loading..." />
               ) : web3 ? (
                 <Button onClick={Connect} title="Connect" />
               ) : (
-                <Button onClick={() => {}} title="Install Metamask" />
+                <Button
+                  onClick={() =>
+                    window.open("https://metamask.io/download/", "_blank")
+                  }
+                  title="Install Metamask"
+                />
               )}
             </div>
           </div>
