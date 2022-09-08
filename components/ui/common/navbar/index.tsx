@@ -1,6 +1,7 @@
 import { useWeb3 } from "@components/providers";
 import { useAccount } from "@components/web3/hooks/useAccount";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import Button from "../button";
 import PurpleSpan from "../purple-span";
@@ -8,6 +9,7 @@ import PurpleSpan from "../purple-span";
 export default function NavBar() {
   const { Connect, isLoading, web3 } = useWeb3();
   const { account } = useAccount();
+  const { pathname } = useRouter();
 
   console.log("Account: ", account);
 
@@ -59,7 +61,7 @@ export default function NavBar() {
           </div>
         </nav>
       </div>
-      {account.data && (
+      {account.data && !pathname.includes("/marketplace") && (
         <div className="flex justify-end pt-3 sm:px-6 lg:px-8">
           <div className="text-white bg-indigo-600 rounded-md p-2">
             {account.data}
