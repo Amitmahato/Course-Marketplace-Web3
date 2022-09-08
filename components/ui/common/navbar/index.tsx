@@ -41,8 +41,10 @@ export default function NavBar() {
               </Link>
               {isLoading ? (
                 <Button disabled title="Loading..." />
-              ) : account ? (
-                <PurpleSpan>Hi there</PurpleSpan>
+              ) : account.data ? (
+                <PurpleSpan>
+                  Hi {account.isAdmin ? "Admin" : "There"}
+                </PurpleSpan>
               ) : web3 ? (
                 <Button onClick={Connect} title="Connect" />
               ) : (
