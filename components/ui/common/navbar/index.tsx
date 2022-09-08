@@ -57,10 +57,10 @@ export default function NavBar() {
           </div>
         </nav>
       </div>
-      {account && (
+      {account.data && (
         <div className="flex justify-end pt-3 sm:px-6 lg:px-8">
           <div className="text-white bg-indigo-600 rounded-md p-2">
-            {account}
+            {account.data}
           </div>
         </div>
       )}
