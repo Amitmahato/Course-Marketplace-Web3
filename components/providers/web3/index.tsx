@@ -1,24 +1,35 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import Web3, { Provider } from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import Contract from "@truffle/contract";
 
-interface IWeb3Context {
+interface IWeb3ContextState {
   web3: Web3;
   provider: Provider;
   contract: Contract;
   isLoading: boolean;
 }
 
-const Web3Context = createContext<IWeb3Context>({
+interface IWeb3ContextMethod {
+  Connect: () => void;
+}
+
+const Web3Context = createContext<IWeb3ContextState & IWeb3ContextMethod>({
   web3: null,
   provider: null,
   contract: null,
   isLoading: true,
+  Connect: () => {},
 });
 
 const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [web3Api, setWeb3Api] = useState<IWeb3Context>({
+  const [web3Api, setWeb3Api] = useState<IWeb3ContextState>({
     web3: null,
     provider: null,
     contract: null,
@@ -48,8 +59,26 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
     loadProvider();
   }, []);
 
+  const connectWallet = useCallback(async () => {
+    if (web3Api.provider) {
+      try {
+        // @ts-ignore
+        await web3Api.provider?.request({ method: "eth_requestAccounts" });
+      } catch (e) {
+        console.log("Cannot retrieve accounts! Error: ", e);
+        location.reload();
+      }
+    } else {
+      console.error(
+        "Cannot connect to metamask, try to reload your browser please"
+      );
+    }
+  }, [web3Api.provider]);
+
   return (
-    <Web3Context.Provider value={web3Api}>{children}</Web3Context.Provider>
+    <Web3Context.Provider value={{ ...web3Api, Connect: connectWallet }}>
+      {children}
+    </Web3Context.Provider>
   );
 };
 
