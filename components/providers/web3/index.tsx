@@ -8,12 +8,15 @@ import React, {
 import Web3, { Provider } from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import Contract from "@truffle/contract";
+import { IHooks } from "interfaces/hooks";
+import { DEFAULT_HOOKS, setupHooks } from "./hooks/setupHooks";
 
 interface IWeb3ContextState {
   web3: Web3;
   provider: Provider;
   contract: Contract;
   isLoading: boolean;
+  hooks: IHooks;
 }
 
 interface IWeb3ContextMethod {
@@ -26,6 +29,7 @@ const Web3Context = createContext<IWeb3ContextState & IWeb3ContextMethod>({
   contract: null,
   isLoading: true,
   Connect: () => {},
+  hooks: DEFAULT_HOOKS,
 });
 
 const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -34,6 +38,7 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
     provider: null,
     contract: null,
     isLoading: true,
+    hooks: DEFAULT_HOOKS,
   });
 
   useEffect(() => {
@@ -46,6 +51,7 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
           provider,
           contract: null,
           isLoading: false,
+          hooks: setupHooks(web3),
         });
       } else {
         setWeb3Api((api) => ({

@@ -4,7 +4,9 @@ import React from "react";
 import Button from "../button";
 
 export default function NavBar() {
-  const { Connect, isLoading, web3 } = useWeb3();
+  const { Connect, isLoading, web3, hooks } = useWeb3();
+  const { account } = hooks.useAccount();
+  console.log("Account: ", account);
   return (
     <section>
       <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
