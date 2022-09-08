@@ -3,6 +3,7 @@ import { useAccount } from "@components/web3/hooks/useAccount";
 import Link from "next/link";
 import React from "react";
 import Button from "../button";
+import PurpleSpan from "../purple-span";
 
 export default function NavBar() {
   const { Connect, isLoading, web3 } = useWeb3();
@@ -12,7 +13,6 @@ export default function NavBar() {
 
   return (
     <section>
-      {account}
       <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
         <nav className="relative" aria-label="Global">
           <div className="flex justify-between">
@@ -41,6 +41,8 @@ export default function NavBar() {
               </Link>
               {isLoading ? (
                 <Button disabled title="Loading..." />
+              ) : account ? (
+                <PurpleSpan>Hi there</PurpleSpan>
               ) : web3 ? (
                 <Button onClick={Connect} title="Connect" />
               ) : (
