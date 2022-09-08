@@ -9,7 +9,7 @@ import Web3, { Provider } from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import Contract from "@truffle/contract";
 import { IHooks, IUseAccount } from "interfaces/hooks";
-import { DEFAULT_HOOKS, setupHooks } from "./hooks/setupHooks";
+import { setupHooks } from "./hooks/setupHooks";
 
 interface IWeb3ContextState {
   web3: Web3;
@@ -29,7 +29,7 @@ const Web3Context = createContext<IWeb3ContextState & IWeb3ContextMethod>({
   contract: null,
   isLoading: true,
   Connect: () => {},
-  getHooks: () => DEFAULT_HOOKS,
+  getHooks: () => setupHooks(null),
 });
 
 const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -38,7 +38,7 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
     provider: null,
     contract: null,
     isLoading: true,
-    getHooks: () => DEFAULT_HOOKS,
+    getHooks: () => setupHooks(null),
   });
 
   useEffect(() => {
