@@ -4,7 +4,6 @@ import {
   CourseHero,
   CourseKeypoints,
 } from "@components/ui/course";
-import { BaseLayout } from "@components/ui/layout";
 import { getAllCourses } from "@content/courses/fetcher";
 import { course } from "interfaces/course";
 import React from "react";
@@ -24,7 +23,7 @@ const Course: React.FC<ICourse> = ({ course }) => {
   ];
 
   return (
-    <BaseLayout>
+    <>
       <div className="py-4">
         <CourseHero
           title={course.title}
@@ -35,7 +34,7 @@ const Course: React.FC<ICourse> = ({ course }) => {
       <CourseKeypoints keypoints={course.wsl} />
       <CourseCurriculam lectures={lectures} locked={true} />
       <Modal />
-    </BaseLayout>
+    </>
   );
 };
 
