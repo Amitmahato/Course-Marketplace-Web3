@@ -1,8 +1,9 @@
 import { useWeb3 } from "@components/providers";
 import Link from "next/link";
 import React from "react";
+import Button from "../button";
 export default function NavBar() {
-  const { Connect } = useWeb3();
+  const { Connect, isLoading, web3 } = useWeb3();
   return (
     <section>
       <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
@@ -31,15 +32,13 @@ export default function NavBar() {
                   Wishlist
                 </a>
               </Link>
-              <button
-                onClick={async () => {
-                  await Connect();
-                }}
-              >
-                <a className="px-8 py-3 border rounded-md text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-                  Connect
-                </a>
-              </button>
+              {isLoading ? (
+                <Button onClick={() => {}} title="Loading..." />
+              ) : web3 ? (
+                <Button onClick={Connect} title="Connect" />
+              ) : (
+                <Button onClick={() => {}} title="Install Metamask" />
+              )}
             </div>
           </div>
         </nav>

@@ -64,6 +64,7 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
       try {
         // @ts-ignore
         await web3Api.provider?.request({ method: "eth_requestAccounts" });
+        console.log("Connection to metamask successfull");
       } catch (e) {
         console.log("Cannot retrieve accounts! Error: ", e);
         location.reload();
