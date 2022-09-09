@@ -95,7 +95,7 @@ export const useWeb3 = () => {
   return useContext(Web3Context);
 };
 
-export const useHooks = (cb: (param: IHooks) => () => IUseAccount) => {
+export const useHooks = (cb: (param: IHooks) => () => any) => {
   const { getHooks } = useWeb3();
   return cb(getHooks());
 };

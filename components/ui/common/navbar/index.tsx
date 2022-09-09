@@ -1,5 +1,5 @@
 import { useWeb3 } from "@components/providers";
-import { useAccount } from "@components/web3/hooks/useAccount";
+import { useAccount } from "@components/hooks/web3/useAccount";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";

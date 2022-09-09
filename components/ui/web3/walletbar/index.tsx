@@ -2,9 +2,10 @@ import React from "react";
 
 interface IWallet {
   address: string;
+  network: number;
 }
 
-const Wallet: React.FC<IWallet> = ({ address }) => {
+const Wallet: React.FC<IWallet> = ({ address, network }) => {
   return (
     <section className="text-white bg-indigo-600">
       <div className="p-8">
@@ -26,7 +27,7 @@ const Wallet: React.FC<IWallet> = ({ address }) => {
           <div>
             <div>
               <span>Currently on </span>
-              <strong className="text-2xl">Ethereum Main Network</strong>
+              <strong className="text-2xl">{network}</strong>
             </div>
           </div>
         </div>
