@@ -5,6 +5,7 @@ interface IWallet {
   network: number;
   targetNetwork: string;
   isSupported: boolean;
+  isInitialised: boolean;
 }
 
 const Wallet: React.FC<IWallet> = ({
@@ -12,6 +13,7 @@ const Wallet: React.FC<IWallet> = ({
   network,
   targetNetwork,
   isSupported,
+  isInitialised,
 }) => {
   return (
     <section className="text-white bg-indigo-600">
@@ -32,7 +34,7 @@ const Wallet: React.FC<IWallet> = ({
             </div>
           </div>
           <div>
-            {!isSupported && (
+            {isInitialised && !isSupported && (
               <div className="bg-red-400 p-4 rounded-lg">
                 <div>Connected to wrong network</div>
                 <div>

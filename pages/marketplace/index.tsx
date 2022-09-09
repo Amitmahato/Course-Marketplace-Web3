@@ -7,7 +7,7 @@ import { useNetwork } from "@components/hooks/web3/useNetwork";
 
 export default function Marketplace({ courses }) {
   const { account } = useAccount();
-  const { network, isSupported, targetNetwork } = useNetwork();
+  const { network, isSupported, targetNetwork, isInitialised } = useNetwork();
   return (
     <>
       <div className="py-4">
@@ -16,6 +16,7 @@ export default function Marketplace({ courses }) {
           network={network.data}
           targetNetwork={targetNetwork}
           isSupported={isSupported}
+          isInitialised={isInitialised}
         />
       </div>
       <CourseList courses={courses}>

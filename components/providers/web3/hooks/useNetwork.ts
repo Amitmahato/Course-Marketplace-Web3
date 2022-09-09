@@ -40,6 +40,7 @@ export const handler =
 
     return {
       network: { mutate, ...swrResponse },
+      isInitialised: swrResponse.data || swrResponse.error,
       isSupported: targetNetwork === swrResponse.data,
       targetNetwork: targetNetwork,
     };
