@@ -3,9 +3,16 @@ import React from "react";
 interface IWallet {
   address: string;
   network: number;
+  targetNetwork: string;
+  isSupported: boolean;
 }
 
-const Wallet: React.FC<IWallet> = ({ address, network }) => {
+const Wallet: React.FC<IWallet> = ({
+  address,
+  network,
+  targetNetwork,
+  isSupported,
+}) => {
   return (
     <section className="text-white bg-indigo-600">
       <div className="p-8">
@@ -25,10 +32,21 @@ const Wallet: React.FC<IWallet> = ({ address, network }) => {
             </div>
           </div>
           <div>
-            <div>
-              <span>Currently on </span>
-              <strong className="text-2xl">{network}</strong>
-            </div>
+            {!isSupported && (
+              <div className="bg-red-400 p-4 rounded-lg">
+                <div>Connected to wrong network</div>
+                <div>
+                  {"Connect to: "}
+                  <strong className="text-2xl">{targetNetwork}</strong>
+                </div>
+              </div>
+            )}
+            {network && (
+              <div>
+                <span>Currently on </span>
+                <strong className="text-2xl">{network}</strong>
+              </div>
+            )}
           </div>
         </div>
       </div>

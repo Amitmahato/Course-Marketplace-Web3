@@ -8,7 +8,7 @@ import React, {
 import Web3, { Provider } from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import Contract from "@truffle/contract";
-import { IHooks, IUseAccount } from "interfaces/hooks";
+import { IHooks } from "interfaces/hooks";
 import { setupHooks } from "./hooks/setupHooks";
 
 interface IWeb3ContextState {

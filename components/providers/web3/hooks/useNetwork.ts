@@ -13,6 +13,8 @@ const NETWORKS = {
   1337: "Ganache",
 };
 
+const targetNetwork = NETWORKS[process.env.NEXT_PUBLIC_TARGET_CHAIN_ID];
+
 export const handler =
   (web3: Web3, provider: any): (() => IUseNetwork) =>
   () => {
@@ -38,5 +40,7 @@ export const handler =
 
     return {
       network: { mutate, ...swrResponse },
+      isSupported: targetNetwork === swrResponse.data,
+      targetNetwork: targetNetwork,
     };
   };
