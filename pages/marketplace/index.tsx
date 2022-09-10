@@ -2,7 +2,7 @@ import { CourseCard, CourseList } from "@components/ui/course";
 import { EthereumRate, Wallet } from "@components/ui/web3";
 import { getAllCourses } from "@content/courses/fetcher";
 import React, { useState } from "react";
-import { Button, Modal } from "@components/ui/common";
+import { Breadcrumb, Button } from "@components/ui/common";
 import { OrderModal } from "@components/ui/order";
 import { course } from "interfaces/course";
 import { useEthPrice } from "@components/hooks/useEthPrice";
@@ -22,7 +22,7 @@ export default function Marketplace({ courses }) {
 
   return (
     <>
-      <div className="py-4">
+      <div className="pt-4">
         <Wallet
           address={account.data}
           network={network.data}
@@ -30,8 +30,9 @@ export default function Marketplace({ courses }) {
           isSupported={isSupported}
           isInitialised={isInitialised}
         />
-        <div className="mt-4">
-          <EthereumRate rate={rate.data} courseEthRate={courseEthRate} />
+        <EthereumRate rate={rate.data} courseEthRate={courseEthRate} />
+        <div className="flex flex-row-reverse py-4 px-4 sm:px-6 lg:px-8">
+          <Breadcrumb />
         </div>
       </div>
       <CourseList courses={courses}>
