@@ -1,21 +1,24 @@
 import { CourseCard, CourseList } from "@components/ui/course";
 import { EthereumRate, Wallet } from "@components/ui/web3";
-import { useAccount } from "@components/hooks/web3/useAccount";
 import { getAllCourses } from "@content/courses/fetcher";
 import React, { useState } from "react";
-import { useNetwork } from "@components/hooks/web3/useNetwork";
 import { Button, Modal } from "@components/ui/common";
 import { OrderModal } from "@components/ui/order";
 import { course } from "interfaces/course";
 import { useEthPrice } from "@components/hooks/useEthPrice";
+import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 
 export default function Marketplace({ courses }) {
-  const { account } = useAccount();
-  const { network, isSupported, targetNetwork, isInitialised } = useNetwork();
+  const {
+    account,
+    network,
+    isSupported,
+    targetNetwork,
+    isInitialised,
+    canPurchaseCourse,
+  } = useWalletInfo();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
   const { rate, courseEthRate } = useEthPrice();
-
-  const canPurchaseCourse = !!(account.data && isSupported);
 
   return (
     <>
