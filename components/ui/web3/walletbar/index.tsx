@@ -1,20 +1,14 @@
+import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import React from "react";
 
-interface IWallet {
-  address: string;
-  network: number;
-  targetNetwork: string;
-  isSupported: boolean;
-  isInitialised: boolean;
-}
-
-const Wallet: React.FC<IWallet> = ({
-  address,
-  network,
-  targetNetwork,
-  isSupported,
-  isInitialised,
-}) => {
+const Wallet = () => {
+  const {
+    account: { data: address },
+    network: { data: network },
+    isSupported,
+    targetNetwork,
+    isInitialised,
+  } = useWalletInfo();
   return (
     <section className="text-white bg-indigo-600 rounded-lg">
       <div className="p-8">

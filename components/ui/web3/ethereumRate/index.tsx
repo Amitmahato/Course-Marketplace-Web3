@@ -1,13 +1,13 @@
-import { COURSE_PRICE } from "@components/hooks/useEthPrice";
+import { COURSE_PRICE, useEthPrice } from "@components/hooks/useEthPrice";
 import Image from "next/image";
 import React from "react";
 
-interface IEthereumRate {
-  rate: number;
-  courseEthRate: number;
-}
+const EthereumRate = () => {
+  const {
+    rate: { data: rate },
+    courseEthRate,
+  } = useEthPrice();
 
-const EthereumRate: React.FC<IEthereumRate> = ({ rate, courseEthRate }) => {
   return (
     <div className="grid grid-cols-4">
       <div className="flex flex-1 items-stretch text-center">

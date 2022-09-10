@@ -5,32 +5,17 @@ import React, { useState } from "react";
 import { Breadcrumb, Button } from "@components/ui/common";
 import { OrderModal } from "@components/ui/order";
 import { course } from "interfaces/course";
-import { useEthPrice } from "@components/hooks/useEthPrice";
 import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 
 export default function Marketplace({ courses }) {
-  const {
-    account,
-    network,
-    isSupported,
-    targetNetwork,
-    isInitialised,
-    canPurchaseCourse,
-  } = useWalletInfo();
+  const { canPurchaseCourse } = useWalletInfo();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
-  const { rate, courseEthRate } = useEthPrice();
 
   return (
     <>
       <div className="pt-4">
-        <Wallet
-          address={account.data}
-          network={network.data}
-          targetNetwork={targetNetwork}
-          isSupported={isSupported}
-          isInitialised={isInitialised}
-        />
-        <EthereumRate rate={rate.data} courseEthRate={courseEthRate} />
+        <Wallet />
+        <EthereumRate />
         <div className="flex flex-row-reverse py-4 px-4 sm:px-6 lg:px-8">
           <Breadcrumb />
         </div>
