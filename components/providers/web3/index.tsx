@@ -16,7 +16,7 @@ interface IWeb3ContextState {
   provider: Provider;
   contract: Contract;
   isLoading: boolean;
-  getHooks: () => IHooks;
+  hooks: IHooks;
 }
 
 interface IWeb3ContextMethod {
@@ -29,7 +29,7 @@ const Web3Context = createContext<IWeb3ContextState & IWeb3ContextMethod>({
   contract: null,
   isLoading: true,
   Connect: () => {},
-  getHooks: () => setupHooks(null, null),
+  hooks: setupHooks(null, null),
 });
 
 const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -38,7 +38,7 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
     provider: null,
     contract: null,
     isLoading: true,
-    getHooks: () => setupHooks(null, null),
+    hooks: setupHooks(null, null),
   });
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
           provider,
           contract: null,
           isLoading: false,
-          getHooks: () => setupHooks(web3, provider),
+          hooks: setupHooks(web3, provider),
         });
       } else {
         setWeb3Api((api) => ({
@@ -96,6 +96,6 @@ export const useWeb3 = () => {
 };
 
 export const useHooks = (cb: (param: IHooks) => () => any) => {
-  const { getHooks } = useWeb3();
-  return cb(getHooks());
+  const { hooks } = useWeb3();
+  return cb(hooks);
 };

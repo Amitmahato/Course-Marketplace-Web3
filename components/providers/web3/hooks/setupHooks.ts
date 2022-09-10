@@ -26,6 +26,7 @@ import { handler as createNetworkHook } from "./useNetwork";
 // };
 
 export const setupHooks = (web3: Web3, provider: any): IHooks => {
+  console.log("Setting Up Hooks...");
   return {
     useAccount: createUseAccount(web3, provider),
     useNetwork: createNetworkHook(web3, provider),
