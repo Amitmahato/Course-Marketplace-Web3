@@ -1,3 +1,4 @@
+export { default as ActiveLink } from "./ActiveLink";
 export { default as Footer } from "./footer";
 export { default as NavBar } from "./navbar";
 export { default as Breadcrumb } from "./breadcrum";
