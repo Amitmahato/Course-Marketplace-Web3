@@ -1,11 +1,16 @@
 import React from "react";
-export default function EthereumRate() {
+
+interface IEthereumRate {
+  rate: number;
+}
+
+const EthereumRate: React.FC<IEthereumRate> = ({ rate }) => {
   return (
     <div className="grid grid-cols-4 mb-5">
       <div className="flex flex-1 items-stretch text-center">
         <div className="p-10 border drop-shadow rounded-md">
           <div>
-            <span className="text-2xl font-bold">ETH = 3145.1$</span>
+            <span className="text-2xl font-bold">ETH = {rate}$</span>
           </div>
           <p className="text-xl text-gray-500">Current eth Price</p>
         </div>
@@ -20,4 +25,6 @@ export default function EthereumRate() {
       </div>
     </div>
   );
-}
+};
+
+export default EthereumRate;

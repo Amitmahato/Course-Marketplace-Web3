@@ -1,5 +1,5 @@
 import { CourseCard, CourseList } from "@components/ui/course";
-import { Wallet } from "@components/ui/web3";
+import { EthereumRate, Wallet } from "@components/ui/web3";
 import { useAccount } from "@components/hooks/web3/useAccount";
 import { getAllCourses } from "@content/courses/fetcher";
 import React, { useState } from "react";
@@ -7,11 +7,13 @@ import { useNetwork } from "@components/hooks/web3/useNetwork";
 import { Button, Modal } from "@components/ui/common";
 import { OrderModal } from "@components/ui/order";
 import { course } from "interfaces/course";
+import { useEthPrice } from "@components/hooks/useEthPrice";
 
 export default function Marketplace({ courses }) {
   const { account } = useAccount();
   const { network, isSupported, targetNetwork, isInitialised } = useNetwork();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
+  const { rate } = useEthPrice();
 
   return (
     <>
@@ -23,6 +25,7 @@ export default function Marketplace({ courses }) {
           isSupported={isSupported}
           isInitialised={isInitialised}
         />
+        <EthereumRate rate={rate.data} />
       </div>
       <CourseList courses={courses}>
         {(course) => (
