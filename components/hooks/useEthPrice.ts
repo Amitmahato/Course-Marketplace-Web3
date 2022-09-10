@@ -1,25 +1,44 @@
 import { IUseEthPrice } from "interfaces/hooks/useEthPrice";
 import useSWR from "swr";
 
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
+enum EXTERNAL_SOURCES {
+  COIN_GEKO = "coingecko",
+  ETHER_SCAN = "etherscan",
+}
+
+const EXTERNAL_API_URLS = {
+  [EXTERNAL_SOURCES.COIN_GEKO]:
+    "https://api.coingecko.com/api/v3/coins/ethereum?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false",
+  [EXTERNAL_SOURCES.ETHER_SCAN]: `https://api.etherscan.io/api?module=stats&action=ethprice&apikey=${process.env.NEXT_PUBLIC_ETHERSCAN_API_TOKEN}`,
+};
+
+const fetcher = async (source) => {
+  const res = await fetch(EXTERNAL_API_URLS[source]);
   const data = await res.json();
-  const usdRate = data.market_data.current_price.usd;
-  return usdRate ?? 0;
+
+  let usdRate = 0;
+  if (source === EXTERNAL_SOURCES.COIN_GEKO) {
+    usdRate = data.market_data.current_price.usd;
+  } else if (source === EXTERNAL_SOURCES.ETHER_SCAN) {
+    usdRate = data.result.ethusd;
+  }
+
+  return Number(usdRate) ?? 0;
 };
 
 export const COURSE_PRICE = 15;
 
 export const useEthPrice = (): IUseEthPrice => {
-  const ethRateUrl =
-    "https://api.coingecko.com/api/v3/coins/ethereum?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false";
-
-  const swrResponse = useSWR("eth-price", () => fetcher(ethRateUrl), {
-    refreshInterval: 10000,
-  });
+  const swrResponse = useSWR(
+    "eth-price",
+    () => fetcher(EXTERNAL_SOURCES.ETHER_SCAN),
+    {
+      refreshInterval: 10000,
+    }
+  );
 
   return {
     rate: swrResponse,
-    courseEthRate: COURSE_PRICE / Number(swrResponse.data),
+    courseEthRate: COURSE_PRICE / Number(swrResponse.data) ?? 0,
   };
 };
