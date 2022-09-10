@@ -2,13 +2,17 @@ import { CourseCard, CourseList } from "@components/ui/course";
 import { Wallet } from "@components/ui/web3";
 import { useAccount } from "@components/hooks/web3/useAccount";
 import { getAllCourses } from "@content/courses/fetcher";
-import React from "react";
+import React, { useState } from "react";
 import { useNetwork } from "@components/hooks/web3/useNetwork";
-import { Button } from "@components/ui/common";
+import { Button, Modal } from "@components/ui/common";
+import { OrderModal } from "@components/ui/order";
+import { course } from "interfaces/course";
 
 export default function Marketplace({ courses }) {
   const { account } = useAccount();
   const { network, isSupported, targetNetwork, isInitialised } = useNetwork();
+  const [selectedCourse, setSelectedCourse] = useState<course>(null);
+
   return (
     <>
       <div className="py-4">
@@ -25,10 +29,27 @@ export default function Marketplace({ courses }) {
           <CourseCard
             key={course.id}
             course={course}
-            Footer={() => <Button title="Purchase" variant="lightPurple" />}
+            Footer={() => (
+              <Button
+                title="Purchase"
+                variant="lightPurple"
+                onClick={() => setSelectedCourse(course)}
+              />
+            )}
           />
         )}
       </CourseList>
+
+      <OrderModal
+        open={!!selectedCourse}
+        onClose={() => {
+          setSelectedCourse(null);
+        }}
+        onSubmit={() => {
+          setSelectedCourse(null);
+        }}
+        course={selectedCourse}
+      />
     </>
   );
 }

@@ -33,7 +33,7 @@ const Course: React.FC<ICourse> = ({ course }) => {
       </div>
       <CourseKeypoints keypoints={course.wsl} />
       <CourseCurriculam lectures={lectures} locked={true} />
-      <Modal />
+      <Modal open={false} />
     </>
   );
 };
