@@ -8,8 +8,6 @@ export const useWalletInfo = (): IUseWalletInfo => {
   return {
     ...accountData,
     ...networkData,
-    canPurchaseCourse: !!(
-      accountData.account.data && networkData.isInitialised
-    ),
+    canPurchaseCourse: !!(accountData.account.data && networkData.isSupported),
   };
 };
