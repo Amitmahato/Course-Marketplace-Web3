@@ -15,6 +15,8 @@ export default function Marketplace({ courses }) {
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
   const { rate, courseEthRate } = useEthPrice();
 
+  const canPurchaseCourse = !!(account.data && isSupported);
+
   return (
     <>
       <div className="py-4">
@@ -32,12 +34,14 @@ export default function Marketplace({ courses }) {
       <CourseList courses={courses}>
         {(course) => (
           <CourseCard
+            disabled={!canPurchaseCourse}
             key={course.id}
             course={course}
             Footer={() => (
               <Button
                 title="Purchase"
                 variant="lightPurple"
+                disabled={!canPurchaseCourse}
                 onClick={() => setSelectedCourse(course)}
               />
             )}

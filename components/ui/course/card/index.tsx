@@ -5,10 +5,11 @@ import React from "react";
 
 interface ICourse {
   course: course;
+  disabled?: boolean;
   Footer?: React.JSXElementConstructor<any>;
 }
 
-const List: React.FC<ICourse> = ({ course, Footer }) => {
+const List: React.FC<ICourse> = ({ course, disabled = false, Footer }) => {
   return (
     <div
       key={course.id}
@@ -17,7 +18,7 @@ const List: React.FC<ICourse> = ({ course, Footer }) => {
       <div className="flex h-full">
         <div className="flex-1 h-full">
           <Image
-            className="object-cover"
+            className={`${disabled && "filter grayscale"} object-cover`}
             src={course.coverImage}
             alt={course.title}
             layout="responsive"

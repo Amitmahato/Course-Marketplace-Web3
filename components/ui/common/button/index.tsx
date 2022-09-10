@@ -12,9 +12,11 @@ const Button: React.FC<IButton> = ({
   variant = "purple",
 }) => {
   const buttonVariant = {
-    red: "text-white bg-red-600 hover:bg-red-700",
-    purple: "text-white bg-indigo-600 hover:bg-indigo-700",
-    lightPurple: "text-indigo-700 bg-indigo-100 hover:bg-indigo-200",
+    red: `text-white bg-red-600 ${!disabled && "hover:bg-red-700"}`,
+    purple: `text-white bg-indigo-600 ${!disabled && "hover:bg-indigo-700"}`,
+    lightPurple: `text-indigo-700 bg-indigo-100 ${
+      !disabled && "hover:bg-indigo-200"
+    }`,
   };
   return (
     <button
