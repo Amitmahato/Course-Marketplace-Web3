@@ -8,6 +8,8 @@ const fetcher = async (url: string) => {
   return usdRate ?? 0;
 };
 
+export const COURSE_PRICE = 15;
+
 export const useEthPrice = (): IUseEthPrice => {
   const ethRateUrl =
     "https://api.coingecko.com/api/v3/coins/ethereum?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false";
@@ -18,5 +20,6 @@ export const useEthPrice = (): IUseEthPrice => {
 
   return {
     rate: swrResponse,
+    courseEthRate: COURSE_PRICE / Number(swrResponse.data),
   };
 };

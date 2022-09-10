@@ -13,7 +13,7 @@ export default function Marketplace({ courses }) {
   const { account } = useAccount();
   const { network, isSupported, targetNetwork, isInitialised } = useNetwork();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
-  const { rate } = useEthPrice();
+  const { rate, courseEthRate } = useEthPrice();
 
   return (
     <>
@@ -25,7 +25,9 @@ export default function Marketplace({ courses }) {
           isSupported={isSupported}
           isInitialised={isInitialised}
         />
-        <EthereumRate rate={rate.data} />
+        <div className="mt-4">
+          <EthereumRate rate={rate.data} courseEthRate={courseEthRate} />
+        </div>
       </div>
       <CourseList courses={courses}>
         {(course) => (
