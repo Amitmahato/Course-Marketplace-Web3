@@ -1,11 +1,11 @@
 import { CourseCard, CourseList } from "@components/ui/course";
-import { EthereumRate, Wallet } from "@components/ui/web3";
 import { getAllCourses } from "@content/courses/fetcher";
 import React, { useState } from "react";
-import { Breadcrumb, Button } from "@components/ui/common";
+import { Button } from "@components/ui/common";
 import { OrderModal } from "@components/ui/order";
 import { course } from "interfaces/course";
 import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
+import { MarketHeader } from "@components/ui/marketplace";
 
 export default function Marketplace({ courses }) {
   const { canPurchaseCourse } = useWalletInfo();
@@ -13,12 +13,8 @@ export default function Marketplace({ courses }) {
 
   return (
     <>
-      <div className="pt-4">
-        <Wallet />
-        <EthereumRate />
-        <div className="flex flex-row-reverse py-4 px-4 sm:px-6 lg:px-8">
-          <Breadcrumb />
-        </div>
+      <div className="py-4">
+        <MarketHeader />
       </div>
       <CourseList courses={courses}>
         {(course) => (
