@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "preetify": "prettier --write 'contracts/**/*.sol'",
+    "lint": "next lint && prettier --list-different 'contracts/**/*.sol'"
   },
   "dependencies": {
     "@metamask/detect-provider": "^1.2.0",
@@ -24,6 +25,8 @@
     "eslint": "8.23.0",
     "eslint-config-next": "12.2.5",
     "postcss": "^8.4.16",
+    "prettier": "^2.7.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.24",
     "tailwind-merge": "^1.6.0",
     "tailwindcss": "^3.1.8",
     "typescript": "^4.8.2"
