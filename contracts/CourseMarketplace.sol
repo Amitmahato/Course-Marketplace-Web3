@@ -65,10 +65,38 @@ contract CourseMarketplace {
       state: State.Purchased
     });
   }
+
+  /**
+   *  Get the total number of courses
+   */
+  function getCourseCount() external view returns (uint256) {
+    return totalOwnedCourses;
+  }
+
+  /**
+   *  Get the hash of the course at a given index
+   */
+  function getCourseHashAtIndex(uint256 index) external view returns (bytes32) {
+    return ownedCoursesHash[index];
+  }
+
+  /**
+   *  Get course detail for a given course hash
+   */
+  function getCourseByHash(bytes32 courseHash)
+    external
+    view
+    returns (Course memory)
+  {
+    return ownedCourses[courseHash];
+  }
 }
 
 /**
   Commands:
     - const instance = await CourseMarketplace.deployed();
-    - instance.purchaseCourse("0x00000000000000000000000000003130","0x0000000000000000000000000000313000000000000000000000000000003130")
+    - await instance.purchaseCourse("0x00000000000000000000000000003130","0x0000000000000000000000000000313000000000000000000000000000003130", { from: accounts[1], value: 2000000000 });
+    - (await instance.getCourseCount()).toString();
+    - await instance.getCourseHashAtIndex(0);
+    - await instance.getCourseByHash("0x54b70b6e9e56c766edcb9d5715690e437820188c9eb798fc4635e137262e30e5");
  */
