@@ -30,12 +30,32 @@ contract CourseMarketplace {
   // total number of courses owned
   uint256 private totalOwnedCourses; // defaults to a value of zero
 
+  address payable private owner;
+
+  constructor() {
+    setContractOwner(msg.sender);
+  }
+
   /**
       Comments made after `///` just above the error declaration 
       is considered as the error message for the given error
    */
   /// You already own the selected course!
   error CourseHasOwner();
+
+  /// Only owner has the access!
+  error OnlyOwner();
+
+  modifier onlyOwner() {
+    if (msg.sender != owner) {
+      revert OnlyOwner();
+    }
+    _;
+  }
+
+  function setContractOwner(address newOwner) private {
+    owner = payable(newOwner);
+  }
 
   function hasCourseOwnership(bytes32 courseHash) private view returns (bool) {
     Course memory course = ownedCourses[courseHash];
@@ -107,6 +127,14 @@ contract CourseMarketplace {
   {
     return ownedCourses[courseHash];
   }
+
+  function transferOwnership(address newOwner) external onlyOwner {
+    setContractOwner(newOwner);
+  }
+
+  function getContractOwner() public view returns (address) {
+    return owner;
+  }
 }
 
 /**
@@ -116,4 +144,13 @@ contract CourseMarketplace {
     - (await instance.getCourseCount()).toString();
     - await instance.getCourseHashAtIndex(0);
     - await instance.getCourseByHash("0x54b70b6e9e56c766edcb9d5715690e437820188c9eb798fc4635e137262e30e5");
+    
+    // accounts[0] is the owner
+    - await instance.getContractOwner();
+
+    // accounts[1] becomes new owner
+    - await instance.transferOwnership("0x1631d6e4b2921Bd8A78B32CC77eF57F231F8F7B2");
+
+    // accounts[0] tries to transfer ownership to accounts[1], throws error since accounts[0] is no longer the owner to execute transferOwnership method
+    - await instance.transferOwnership("0x1631d6e4b2921Bd8A78B32CC77eF57F231F8F7B2",{ from:"0x24f968F05696b1F7322A8772f76eF46Bb3D38414" });
  */
