@@ -31,6 +31,18 @@ contract CourseMarketplace {
   uint256 private totalOwnedCourses; // defaults to a value of zero
 
   /**
+      Comments made after `///` just above the error declaration 
+      is considered as the error message for the given error
+   */
+  /// You already own the selected course!
+  error CourseHasOwner();
+
+  function hasCourseOwnership(bytes32 courseHash) private view returns (bool) {
+    Course memory course = ownedCourses[courseHash];
+    return course.owner == msg.sender;
+  }
+
+  /**
     Example,
       - courseId  = 10 (ASCII) 
                   = 0x3130 (HEX) 
@@ -55,6 +67,11 @@ contract CourseMarketplace {
         - keccak256 encodes the concatenated courseId & sender address to generate the final course hash
      */
     bytes32 courseHash = keccak256(abi.encodePacked(courseId, msg.sender));
+
+    if (hasCourseOwnership(courseHash)) {
+      revert CourseHasOwner();
+    }
+
     uint256 id = totalOwnedCourses++;
     ownedCoursesHash[id] = courseHash;
     ownedCourses[courseHash] = Course({
