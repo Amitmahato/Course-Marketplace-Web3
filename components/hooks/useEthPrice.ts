@@ -37,8 +37,11 @@ export const useEthPrice = (): IUseEthPrice => {
     }
   );
 
+  const perItem = Number(
+    (COURSE_PRICE / Number(swrResponse.data) ?? 0).toFixed(6)
+  );
   return {
     rate: swrResponse,
-    courseEthRate: COURSE_PRICE / Number(swrResponse.data) ?? 0,
+    courseEthRate: !isNaN(perItem) ? perItem : 0,
   };
 };

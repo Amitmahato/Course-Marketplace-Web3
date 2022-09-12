@@ -34,16 +34,18 @@ export default function Marketplace({ courses }) {
         )}
       </CourseList>
 
-      <OrderModal
-        open={!!selectedCourse}
-        onClose={() => {
-          setSelectedCourse(null);
-        }}
-        onSubmit={() => {
-          setSelectedCourse(null);
-        }}
-        course={selectedCourse}
-      />
+      {!!selectedCourse && (
+        <OrderModal
+          open={!!selectedCourse}
+          onClose={() => {
+            setSelectedCourse(null);
+          }}
+          onSubmit={() => {
+            setSelectedCourse(null);
+          }}
+          course={selectedCourse}
+        />
+      )}
     </>
   );
 }

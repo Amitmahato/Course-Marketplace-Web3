@@ -1,3 +1,4 @@
+import { useEthPrice } from "@components/hooks/useEthPrice";
 import { Button, Modal } from "@components/ui/common";
 import { course } from "interfaces/course";
 import React, { useEffect, useState } from "react";
@@ -9,11 +10,33 @@ interface IModal {
   onSubmit: () => void;
 }
 
+const DefaultOrder = {
+  price: 0.0,
+  email: "",
+  confirmEmail: "",
+};
+
 const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
   const [_open, setOpen] = useState(open);
+  const { courseEthRate } = useEthPrice();
+  const [adjustPrice, setAdjustPrice] = useState(false);
+
+  const [order, setOrder] = useState<typeof DefaultOrder>({
+    price: courseEthRate,
+    email: "",
+    confirmEmail: "",
+  });
+
+  useEffect(() => {
+    setOrder({
+      ...order,
+      price: courseEthRate,
+    });
+  }, [courseEthRate]);
 
   const _onClose = () => {
     setOpen(false);
+    setOrder(DefaultOrder);
     onClose();
   };
 
@@ -26,7 +49,7 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
       <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div className="sm:flex sm:items-start">
-            <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <div className="mt-3 sm:mt-0 sm:ml-4 sm:text-left">
               <h3
                 className="mb-7 text-lg font-bold leading-6 text-gray-900"
                 id="modal-title"
@@ -38,7 +61,19 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
                   <label className="mb-2 font-bold">Price(eth)</label>
                   <div className="text-xs text-gray-700 flex">
                     <label className="flex items-center mr-2">
-                      <input type="checkbox" className="form-checkbox" />
+                      <input
+                        checked={adjustPrice}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setAdjustPrice(checked);
+                          setOrder({
+                            ...order,
+                            ...(!checked ? { price: courseEthRate } : {}),
+                          });
+                        }}
+                        type="checkbox"
+                        className="form-checkbox"
+                      />
                     </label>
                     <span>
                       Adjust Price - only when the price is not correct
@@ -46,6 +81,18 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
                   </div>
                 </div>
                 <input
+                  value={order.price}
+                  disabled={!adjustPrice}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const price = Number(value);
+                    if (!isNaN(price)) {
+                      setOrder({
+                        ...order,
+                        price: price,
+                      });
+                    }
+                  }}
                   type="text"
                   name="price"
                   id="price"
@@ -65,6 +112,14 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
                   type="email"
                   name="email"
                   id="email"
+                  value={order.email}
+                  onChange={(e) => {
+                    const email = e.target.value.trim();
+                    setOrder({
+                      ...order,
+                      email,
+                    });
+                  }}
                   className="w-80 focus:ring-indigo-500 shadow-md focus:border-indigo-500 block pl-7 p-4 sm:text-sm border-gray-300 rounded-md"
                   placeholder="x@y.com"
                 />
@@ -82,6 +137,14 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
                   type="email"
                   name="confirmationEmail"
                   id="confirmationEmail"
+                  value={order.confirmEmail}
+                  onChange={(e) => {
+                    const confirmEmail = e.target.value.trim();
+                    setOrder({
+                      ...order,
+                      confirmEmail,
+                    });
+                  }}
                   className="w-80 focus:ring-indigo-500 shadow-md focus:border-indigo-500 block pl-7 p-4 sm:text-sm border-gray-300 rounded-md"
                   placeholder="x@y.com"
                 />
