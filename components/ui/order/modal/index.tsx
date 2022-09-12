@@ -3,25 +3,65 @@ import { Button, Modal } from "@components/ui/common";
 import { course } from "interfaces/course";
 import React, { useEffect, useState } from "react";
 
+export interface IOrderState {
+  price: number;
+  email: string;
+  confirmEmail: string;
+}
+
 interface IModal {
   open: boolean;
   course: course;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: (order: IOrderState) => void;
 }
 
-const DefaultOrder = {
+const DefaultOrder: IOrderState = {
   price: 0.0,
   email: "",
   confirmEmail: "",
+};
+
+interface FormState {
+  disabled: boolean;
+  message: string[];
+}
+
+const createFromState: (
+  order: IOrderState,
+  hasAgreedTOS: boolean
+) => FormState = ({ price, email, confirmEmail }, hasAgreedTOS) => {
+  const formState: FormState = { disabled: false, message: [] };
+
+  if (!price || price <= 0) {
+    formState.message.push("Price is not valid");
+  }
+
+  if (email.length === 0 || confirmEmail.length === 0) {
+    formState.message.push("Email cannot be empty");
+  }
+
+  if (email !== confirmEmail) {
+    formState.message.push("Email & Confirmation Email should match");
+  }
+
+  if (!hasAgreedTOS) {
+    formState.message.push(
+      "You need to agree with terms of service in order to submit the form"
+    );
+  }
+
+  formState.disabled = formState.message.length > 0;
+  return formState;
 };
 
 const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
   const [_open, setOpen] = useState(open);
   const { courseEthRate } = useEthPrice();
   const [adjustPrice, setAdjustPrice] = useState(false);
+  const [hasAgreedTOS, setHasAgreedTOS] = useState(false);
 
-  const [order, setOrder] = useState<typeof DefaultOrder>({
+  const [order, setOrder] = useState<IOrderState>({
     price: courseEthRate,
     email: "",
     confirmEmail: "",
@@ -41,9 +81,12 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
   };
 
   const _onSubmit = () => {
-    onSubmit();
+    onSubmit(order);
     setOpen(false);
   };
+
+  const formState = createFromState(order, hasAgreedTOS);
+
   return (
     <Modal open={open}>
       <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
@@ -131,7 +174,7 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
               </div>
               <div className="my-2 relative rounded-md">
                 <div className="mb-1">
-                  <label className="mb-2 font-bold">Repeat Email</label>
+                  <label className="mb-2 font-bold">Confirmation Email</label>
                 </div>
                 <input
                   type="email"
@@ -151,7 +194,14 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
               </div>
               <div className="text-xs text-gray-700 flex">
                 <label className="flex items-center mr-2">
-                  <input type="checkbox" className="form-checkbox" />
+                  <input
+                    type="checkbox"
+                    className="form-checkbox"
+                    checked={hasAgreedTOS}
+                    onChange={({ target: { checked } }) => {
+                      setHasAgreedTOS(checked);
+                    }}
+                  />
                 </label>
                 <span>
                   I accept Eincode &apos;terms of service&apos; and I agree that
@@ -159,11 +209,26 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
                   not correct
                 </span>
               </div>
+              {formState.message.length > 0 && (
+                <div className="p-4 my-3 text-red-700 bg-red-200 rounded-lg text-sm">
+                  <ul>
+                    {formState.message.map((message, index) => (
+                      <li>
+                        {index + 1}. {message}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
         <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
-          <Button title="Submit" onClick={_onSubmit} />
+          <Button
+            title="Submit"
+            disabled={formState.disabled}
+            onClick={_onSubmit}
+          />
           <Button title="Cancel" variant="red" onClick={_onClose} />
         </div>
       </div>

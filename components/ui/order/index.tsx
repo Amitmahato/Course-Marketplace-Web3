@@ -1,1 +1,1 @@
-export { default as OrderModal } from "./modal";
+export { default as OrderModal, type IOrderState } from "./modal";

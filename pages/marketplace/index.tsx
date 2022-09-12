@@ -2,7 +2,7 @@ import { CourseCard, CourseList } from "@components/ui/course";
 import { getAllCourses } from "@content/courses/fetcher";
 import React, { useState } from "react";
 import { Button } from "@components/ui/common";
-import { OrderModal } from "@components/ui/order";
+import { IOrderState, OrderModal } from "@components/ui/order";
 import { course } from "interfaces/course";
 import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import { MarketHeader } from "@components/ui/marketplace";
@@ -10,6 +10,10 @@ import { MarketHeader } from "@components/ui/marketplace";
 export default function Marketplace({ courses }) {
   const { canPurchaseCourse } = useWalletInfo();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
+
+  const purchaseCourse = (order: IOrderState) => {
+    console.log("Purchased Course Order: ", order);
+  };
 
   return (
     <>
@@ -40,7 +44,8 @@ export default function Marketplace({ courses }) {
           onClose={() => {
             setSelectedCourse(null);
           }}
-          onSubmit={() => {
+          onSubmit={(order: IOrderState) => {
+            purchaseCourse(order);
             setSelectedCourse(null);
           }}
           course={selectedCourse}
