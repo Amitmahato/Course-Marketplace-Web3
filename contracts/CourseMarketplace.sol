@@ -21,6 +21,15 @@ contract CourseMarketplace {
     State state; // 1 byte (slot 4)
   }
 
+  // Course Hash maps to Course
+  mapping(bytes32 => Course) private ownedCourses;
+
+  // Course Id maps to Course Hash
+  mapping(uint256 => bytes32) private ownedCoursesHash;
+
+  // total number of courses owned
+  uint256 private totalOwnedCourses; // defaults to a value of zero
+
   /**
     Example,
       - courseId  = 10 (ASCII) 
@@ -40,17 +49,21 @@ contract CourseMarketplace {
       - let proof = courseId-courseId (16 + 16 = 32 bytes, random value as of now)
                   = 0x0000000000000000000000000000313000000000000000000000000000003130
    */
-  function purchaseCourse(bytes16 courseId, bytes32 proof)
-    external
-    payable
-    returns (bytes32)
-  {
+  function purchaseCourse(bytes16 courseId, bytes32 proof) external payable {
     /**
         - abi.encodePacked(courseId, msg.sender) => simply concatenates courseId & sender address together
         - keccak256 encodes the concatenated courseId & sender address to generate the final course hash
      */
     bytes32 courseHash = keccak256(abi.encodePacked(courseId, msg.sender));
-    return courseHash;
+    uint256 id = totalOwnedCourses++;
+    ownedCoursesHash[id] = courseHash;
+    ownedCourses[courseHash] = Course({
+      id: id,
+      price: msg.value,
+      proof: proof,
+      owner: msg.sender,
+      state: State.Purchased
+    });
   }
 }
 
