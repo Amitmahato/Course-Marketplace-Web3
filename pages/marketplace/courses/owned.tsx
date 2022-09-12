@@ -1,3 +1,5 @@
+import { Button, Message } from "@components/ui/common";
+import { MessageTypes } from "@components/ui/common/message";
 import OwnedCourseCard from "@components/ui/course/card/OwnedCourseCard";
 import { MarketHeader } from "@components/ui/marketplace";
 
@@ -8,7 +10,10 @@ const OwnedCourses = () => {
         <MarketHeader />
       </div>
       <section className="grid grid-cols-1">
-        <OwnedCourseCard />
+        <OwnedCourseCard>
+          <Message type={MessageTypes.success}>Purchased!</Message>
+          <Button title="Watch the course" />
+        </OwnedCourseCard>
       </section>
     </>
   );
