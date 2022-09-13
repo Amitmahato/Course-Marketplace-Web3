@@ -213,7 +213,7 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
                 <div className="p-4 my-3 text-red-700 bg-red-200 rounded-lg text-sm">
                   <ul>
                     {formState.message.map((message, index) => (
-                      <li>
+                      <li key={index}>
                         {index + 1}. {message}
                       </li>
                     ))}
