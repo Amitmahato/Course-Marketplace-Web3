@@ -1,22 +1,19 @@
-import { Provider } from "web3";
+import Web3 from "web3";
 
-type TruffleContract = window.TruffleContract;
+const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 
-export const loadContract = async (
-  name: string,
-  provider: Provider
-): TruffleContract => {
+export const loadContract = async (name: string, web3: Web3) => {
   try {
     const res = await fetch(`/contracts/${name}.json`);
-    const artifact = await res.json();
+    const Artifact = await res.json();
 
-    const _contract = window.TruffleContract(artifact);
-    _contract.setProvider(provider);
+    const _contract = new web3.eth.Contract(
+      Artifact.abi,
+      Artifact.networks[NETWORK_ID].address
+    );
 
-    const deployedContract = await _contract.deployed();
-
-    return deployedContract;
-  } catch {
-    console.error(`Failed to load ${name} contract!`);
+    return _contract;
+  } catch (e) {
+    console.error(`Failed to load ${name} contract!, Error: `, e);
   }
 };

@@ -13,13 +13,15 @@ export default function Marketplace({ courses }) {
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
   const { contract } = useWeb3();
 
+  console.log("Contract: ", contract);
+
   const purchaseCourse = (order: IOrderState) => {
     console.log("Purchased Course Order: ", order);
   };
 
   return (
     <>
-      {contract?.address}
+      {contract?._address}
       <div className="py-4">
         <MarketHeader />
       </div>
