@@ -1,8 +1,11 @@
-import Web3 from "web3";
+import Web3, { Contract } from "web3";
 
 const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 
-export const loadContract = async (name: string, web3: Web3) => {
+export const loadContract = async (
+  name: string,
+  web3: Web3
+): Promise<Contract> => {
   try {
     const res = await fetch(`/contracts/${name}.json`);
     const Artifact = await res.json();

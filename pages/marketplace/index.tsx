@@ -9,14 +9,55 @@ import { MarketHeader } from "@components/ui/marketplace";
 import { useWeb3 } from "@components/providers";
 
 export default function Marketplace({ courses }) {
-  const { canPurchaseCourse } = useWalletInfo();
+  const { canPurchaseCourse, account } = useWalletInfo();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
-  const { contract } = useWeb3();
-
-  console.log("Contract: ", contract);
+  const { contract, web3 } = useWeb3();
 
   const purchaseCourse = (order: IOrderState) => {
-    console.log("Purchased Course Order: ", order);
+    const hexCourseId = web3.utils.utf8ToHex(selectedCourse.id);
+
+    /**
+     * Order Hash = keccak256(course id + account address)
+     *
+     * Ex:
+     * - course id  = 1410474 => ASCII to HEX => 0x31343130343734 (7 bytes) =>  0x31343130343734000000000000000000 (16 bytes)
+     * - address    = 0x95bDbD553b5848E10DDE013E32FfdDd9C28BD406
+     * - orderHash  = keccak256(0x3134313034373400000000000000000095bDbD553b5848E10DDE013E32FfdDd9C28BD406)
+     *              = 0x886687af6e083d9cbefd4e39a5909c6cc3009dd767f0d4fb8e6d8dd31bd1f3af
+     */
+    const orderHash = web3.utils.soliditySha3(
+      {
+        type: "bytes16",
+        value: hexCourseId,
+      },
+      {
+        type: "bytes20",
+        value: account.data,
+      }
+    );
+
+    /**
+     * Let email = mahatoa90@gmail.com => ASCII
+     *    keccak256(email) => 0x31e6504e138603a3f8c843ff62a9ba4c4c8d687865767c34c1bca3550b32331f
+     */
+    const emailHash = web3.utils.soliditySha3(order.email);
+
+    /**
+     * emailHash  = 0x31e6504e138603a3f8c843ff62a9ba4c4c8d687865767c34c1bca3550b32331f (32 bytes)
+     * orderHash  = 0x886687af6e083d9cbefd4e39a5909c6cc3009dd767f0d4fb8e6d8dd31bd1f3af (32 bytes)
+     *
+     * proof      = keccak256(0x31e6504e138603a3f8c843ff62a9ba4c4c8d687865767c34c1bca3550b32331f886687af6e083d9cbefd4e39a5909c6cc3009dd767f0d4fb8e6d8dd31bd1f3af)
+     *            = 0x80cd072bab8f039dd26a9604b31ce857bf2c5dfb470aa03a202d0a6b689159c9 (32 bytes)
+     */
+    const proof = web3.utils.soliditySha3(
+      { type: "bytes32", value: emailHash },
+      { type: "bytes32", value: orderHash }
+    );
+
+    console.log("hexCourseId: ", hexCourseId);
+    console.log("orderHash: ", orderHash);
+    console.log("emailHash: ", emailHash);
+    console.log("proof: ", proof);
   };
 
   return (

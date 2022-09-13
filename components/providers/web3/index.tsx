@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import Web3, { Provider } from "web3";
+import Web3, { Contract, Provider } from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { IHooks } from "interfaces/hooks";
 import { setupHooks } from "./hooks/setupHooks";
@@ -14,7 +14,7 @@ import { loadContract } from "@utils/loadContract";
 interface IWeb3ContextState {
   web3: Web3;
   provider: Provider;
-  contract: any;
+  contract: Contract;
   isLoading: boolean;
   hooks: IHooks;
 }
