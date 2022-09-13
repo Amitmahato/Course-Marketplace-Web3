@@ -6,10 +6,12 @@ import { IOrderState, OrderModal } from "@components/ui/order";
 import { course } from "interfaces/course";
 import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import { MarketHeader } from "@components/ui/marketplace";
+import { useWeb3 } from "@components/providers";
 
 export default function Marketplace({ courses }) {
   const { canPurchaseCourse } = useWalletInfo();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
+  const { contract } = useWeb3();
 
   const purchaseCourse = (order: IOrderState) => {
     console.log("Purchased Course Order: ", order);
@@ -17,6 +19,7 @@ export default function Marketplace({ courses }) {
 
   return (
     <>
+      {contract?.address}
       <div className="py-4">
         <MarketHeader />
       </div>

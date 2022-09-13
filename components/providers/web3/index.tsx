@@ -7,14 +7,15 @@ import React, {
 } from "react";
 import Web3, { Provider } from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
-import Contract from "@truffle/contract";
+import contract from "@truffle/contract";
 import { IHooks } from "interfaces/hooks";
 import { setupHooks } from "./hooks/setupHooks";
+import { loadContract } from "@utils/loadContract";
 
 interface IWeb3ContextState {
   web3: Web3;
   provider: Provider;
-  contract: Contract;
+  contract: contract;
   isLoading: boolean;
   hooks: IHooks;
 }
@@ -46,10 +47,11 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
       const provider = await detectEthereumProvider();
       if (provider) {
         const web3 = new Web3(provider);
+        const contract = await loadContract("CourseMarketplace", provider);
         setWeb3Api({
           web3,
           provider,
-          contract: null,
+          contract,
           isLoading: false,
           hooks: setupHooks(web3, provider),
         });
