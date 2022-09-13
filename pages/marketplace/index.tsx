@@ -13,7 +13,7 @@ export default function Marketplace({ courses }) {
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
   const { contract, web3 } = useWeb3();
 
-  const purchaseCourse = (order: IOrderState) => {
+  const purchaseCourse = async (order: IOrderState) => {
     const hexCourseId = web3.utils.utf8ToHex(selectedCourse.id);
 
     /**
@@ -54,15 +54,27 @@ export default function Marketplace({ courses }) {
       { type: "bytes32", value: orderHash }
     );
 
-    console.log("hexCourseId: ", hexCourseId);
-    console.log("orderHash: ", orderHash);
-    console.log("emailHash: ", emailHash);
-    console.log("proof: ", proof);
+    const value = web3.utils.toWei(order.price.toString());
+
+    try {
+      const result = await contract.methods
+        .purchaseCourse(hexCourseId, proof)
+        .send({
+          from: account.data,
+          value,
+        });
+      console.log(
+        "Course purchased successfully! Transaction details: ",
+        result
+      );
+    } catch (e) {
+      // will fail you same user tries to purchase any given course twice
+      console.log("Failed to purcahse course! Error: ", e);
+    }
   };
 
   return (
     <>
-      {contract?._address}
       <div className="py-4">
         <MarketHeader />
       </div>
