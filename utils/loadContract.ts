@@ -1,15 +1,16 @@
 import { Provider } from "web3";
-import contract from "@truffle/contract";
+
+type TruffleContract = window.TruffleContract;
 
 export const loadContract = async (
   name: string,
   provider: Provider
-): contract => {
+): TruffleContract => {
   try {
     const res = await fetch(`/contracts/${name}.json`);
     const artifact = await res.json();
 
-    const _contract = contract(artifact);
+    const _contract = window.TruffleContract(artifact);
     _contract.setProvider(provider);
 
     const deployedContract = await _contract.deployed();

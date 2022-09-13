@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import Web3, { Provider } from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
-import contract from "@truffle/contract";
+// import contract from "@truffle/contract";
 import { IHooks } from "interfaces/hooks";
 import { setupHooks } from "./hooks/setupHooks";
 import { loadContract } from "@utils/loadContract";
@@ -15,7 +15,7 @@ import { loadContract } from "@utils/loadContract";
 interface IWeb3ContextState {
   web3: Web3;
   provider: Provider;
-  contract: contract;
+  contract: window.TruffleContract;
   isLoading: boolean;
   hooks: IHooks;
 }
