@@ -10,3 +10,11 @@ export interface course {
   wsl: string[];
   createdAt: string;
 }
+
+export interface CourseOwnership {
+  id: string;
+  proof: string;
+  owner: string;
+  state: number;
+  price: string;
+}

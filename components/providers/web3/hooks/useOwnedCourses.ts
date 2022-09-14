@@ -1,3 +1,4 @@
+import { normalizeOwnedCourse } from "@utils/normalize";
 import { course } from "interfaces/course";
 import { IUseOwnedCourses } from "interfaces/hooks/useOwnedCourses";
 import useSWR from "swr";
@@ -28,7 +29,9 @@ export const handler =
             const courseOwner = web3.utils.hexToNumberString(ownedCourse.owner);
 
             if (courseOwner !== "0") {
-              ownedCourses.push(ownedCourse);
+              ownedCourses.push(
+                normalizeOwnedCourse(web3)(course, ownedCourse)
+              );
             }
           }
         }
