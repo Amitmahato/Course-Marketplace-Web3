@@ -9,9 +9,11 @@ import { getAllCourses } from "@content/courses/fetcher";
 const OwnedCourses = ({ courses }) => {
   const { account } = useAccount();
   const { ownedCourses } = useOwnedCourses(courses, account.data);
+
+  console.log("Owned Courses : ", ownedCourses.data);
+
   return (
     <>
-      {"[ " + ownedCourses.data.join(", ") + " ]"}
       <div className="py-4">
         <MarketHeader />
       </div>
