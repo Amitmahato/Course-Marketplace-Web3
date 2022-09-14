@@ -1,14 +1,17 @@
+import { useAccount } from "@components/hooks/web3/useAccount";
 import { useOwnedCourses } from "@components/hooks/web3/useOwnedCourses";
 import { Button, Message } from "@components/ui/common";
 import { MessageTypes } from "@components/ui/common/message";
 import OwnedCourseCard from "@components/ui/course/card/OwnedCourseCard";
 import { MarketHeader } from "@components/ui/marketplace";
+import { getAllCourses } from "@content/courses/fetcher";
 
-const OwnedCourses = () => {
-  const { data } = useOwnedCourses();
+const OwnedCourses = ({ courses }) => {
+  const { account } = useAccount();
+  const { ownedCourses } = useOwnedCourses(courses, account.data);
   return (
     <>
-      {data}
+      {"[ " + ownedCourses.data.join(", ") + " ]"}
       <div className="py-4">
         <MarketHeader />
       </div>
@@ -22,3 +25,10 @@ const OwnedCourses = () => {
   );
 };
 export default OwnedCourses;
+
+export function getStaticProps() {
+  const { data } = getAllCourses();
+  return {
+    props: { courses: data },
+  };
+}

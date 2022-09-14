@@ -1,3 +1,5 @@
+import { SWRResponse } from "swr";
+
 export interface IUseOwnedCourses {
-  data: string;
+  ownedCourses: SWRResponse;
 }

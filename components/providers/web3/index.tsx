@@ -116,7 +116,7 @@ export const useWeb3 = () => {
   return useContext(Web3Context);
 };
 
-export const useHooks = (cb: (param: IHooks) => () => any) => {
+export const useHooks = (cb: (param: IHooks) => (...params: any) => any) => {
   const { hooks } = useWeb3();
   return cb(hooks);
 };
