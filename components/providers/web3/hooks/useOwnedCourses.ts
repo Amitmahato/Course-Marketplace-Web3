@@ -8,7 +8,7 @@ export const handler =
   (web3: Web3, contract: Contract) =>
   (courses: course[], account: string): IUseOwnedCourses => {
     const swrResponse = useSWR(
-      web3 && contract && account ? "web3-ownedCourses" : null,
+      web3 && contract && account ? `web3-ownedCourses-${account}` : null,
       async () => {
         const ownedCourses = [];
 
