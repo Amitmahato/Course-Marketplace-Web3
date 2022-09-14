@@ -23,23 +23,40 @@ interface IWeb3ContextMethod {
   Connect: () => void;
 }
 
-const Web3Context = createContext<IWeb3ContextState & IWeb3ContextMethod>({
-  web3: null,
-  provider: null,
-  contract: null,
-  isLoading: true,
-  Connect: () => {},
-  hooks: setupHooks(null, null, null),
-});
+const createWeb3State = ({
+  web3,
+  contract,
+  provider,
+  isLoading,
+}: Partial<IWeb3ContextState>): IWeb3ContextState & IWeb3ContextMethod => {
+  return {
+    web3,
+    contract,
+    provider,
+    isLoading,
+    Connect: () => {},
+    hooks: setupHooks(web3, provider, contract),
+  };
+};
 
-const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [web3Api, setWeb3Api] = useState<IWeb3ContextState>({
+const Web3Context = createContext<IWeb3ContextState & IWeb3ContextMethod>(
+  createWeb3State({
     web3: null,
     provider: null,
     contract: null,
     isLoading: true,
-    hooks: setupHooks(null, null, null),
-  });
+  })
+);
+
+const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const [web3Api, setWeb3Api] = useState<IWeb3ContextState>(
+    createWeb3State({
+      web3: null,
+      provider: null,
+      contract: null,
+      isLoading: true,
+    })
+  );
 
   useEffect(() => {
     const loadProvider = async () => {
@@ -47,18 +64,21 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
       if (provider) {
         const web3 = new Web3(provider);
         const contract = await loadContract("CourseMarketplace", web3);
-        setWeb3Api({
-          web3,
-          provider,
-          contract,
-          isLoading: false,
-          hooks: setupHooks(web3, provider, contract),
-        });
+        setWeb3Api(
+          createWeb3State({
+            web3,
+            provider,
+            contract,
+            isLoading: false,
+          })
+        );
       } else {
-        setWeb3Api((api) => ({
-          ...api,
-          isLoading: false,
-        }));
+        setWeb3Api((api) =>
+          createWeb3State({
+            ...api,
+            isLoading: false,
+          })
+        );
         console.log("Install Metamask");
       }
     };
