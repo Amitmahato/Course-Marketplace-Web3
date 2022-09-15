@@ -1,3 +1,5 @@
+import { useOwnedCourse } from "@components/hooks/web3/useOwnedCourse";
+import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import { Modal } from "@components/ui/common";
 import {
   CourseCurriculam,
@@ -13,6 +15,11 @@ interface ICourse {
 }
 
 const Course: React.FC<ICourse> = ({ course }) => {
+  const { account } = useWalletInfo();
+  const { ownedCourse } = useOwnedCourse(course, account.data);
+
+  console.log(ownedCourse.data);
+
   const lectures = [
     "How to init App",
     "How to get a help",

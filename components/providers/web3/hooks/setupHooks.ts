@@ -3,6 +3,7 @@ import Web3, { Contract } from "web3";
 import { handler as createUseAccount } from "./useAccount";
 import { handler as createNetworkHook } from "./useNetwork";
 import { handler as createOwnedCoursesHook } from "./useOwnedCourses";
+import { handler as createOwnedCourseHook } from "./useOwnedCourse";
 
 /**
  * The method registered in the default value should contain exactly the same
@@ -35,5 +36,6 @@ export const setupHooks = (
     useAccount: createUseAccount(web3, provider),
     useNetwork: createNetworkHook(web3, provider),
     useOwnedCourses: createOwnedCoursesHook(web3, contract),
+    useOwnedCourse: createOwnedCourseHook(web3, contract),
   };
 };
