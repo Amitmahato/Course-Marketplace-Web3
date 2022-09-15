@@ -5,8 +5,10 @@ import { MessageTypes } from "@components/ui/common/message";
 import OwnedCourseCard from "@components/ui/course/card/OwnedCourseCard";
 import { MarketHeader } from "@components/ui/marketplace";
 import { getAllCourses } from "@content/courses/fetcher";
+import { useRouter } from "next/router";
 
 const OwnedCourses = ({ courses }) => {
+  const router = useRouter();
   const { account } = useAccount();
   const { ownedCourses } = useOwnedCourses(courses, account.data);
 
@@ -19,7 +21,10 @@ const OwnedCourses = ({ courses }) => {
         {ownedCourses.data?.map((course) => (
           <OwnedCourseCard key={course.id} course={course}>
             {/* <Message type={MessageTypes.success}>Purchased!</Message> */}
-            <Button title="Watch the course" />
+            <Button
+              onClick={() => router.push(`/courses/${course.slug}`)}
+              title="Watch the course"
+            />
           </OwnedCourseCard>
         ))}
       </section>
