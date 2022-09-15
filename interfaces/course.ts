@@ -20,3 +20,7 @@ export interface CourseOwnership {
   state: COURSE_STATE;
   price: string;
 }
+
+export interface IOwnedCourse extends course, CourseOwnership {
+  ownedCourseId: string;
+}

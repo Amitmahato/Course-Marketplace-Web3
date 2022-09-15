@@ -1,5 +1,5 @@
 import { normalizeOwnedCourse } from "@utils/normalize";
-import { course } from "interfaces/course";
+import { course, IOwnedCourse } from "interfaces/course";
 import { IUseOwnedCourses } from "interfaces/hooks/useOwnedCourses";
 import useSWR from "swr";
 import Web3, { Contract } from "web3";
@@ -7,10 +7,10 @@ import Web3, { Contract } from "web3";
 export const handler =
   (web3: Web3, contract: Contract) =>
   (courses: course[], account: string): IUseOwnedCourses => {
-    const swrResponse = useSWR(
+    const swrResponse = useSWR<IOwnedCourse[]>(
       web3 && contract && account ? `web3-ownedCourses-${account}` : null,
       async () => {
-        const ownedCourses = [];
+        const ownedCourses: IOwnedCourse[] = [];
 
         for (let index = 0; index < courses.length; index++) {
           const course = courses[index];
@@ -40,5 +40,8 @@ export const handler =
       }
     );
 
-    return { ownedCourses: swrResponse };
+    return {
+      ownedCourses: swrResponse,
+      isInitialised: !!(swrResponse.data || swrResponse.error),
+    };
   };

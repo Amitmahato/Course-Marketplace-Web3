@@ -1,6 +1,6 @@
 import { SWRResponse } from "swr";
-import { course, CourseOwnership } from "../course";
+import { IOwnedCourse } from "../course";
 
 export interface IUseOwnedCourse {
-  ownedCourse: SWRResponse<course & CourseOwnership>;
+  ownedCourse: SWRResponse<IOwnedCourse>;
 }
