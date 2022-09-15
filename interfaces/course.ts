@@ -1,3 +1,5 @@
+import { COURSE_STATE } from "@utils/normalize";
+
 export interface course {
   id: string;
   type: string;
@@ -15,6 +17,6 @@ export interface CourseOwnership {
   id: string;
   proof: string;
   owner: string;
-  state: string;
+  state: COURSE_STATE;
   price: string;
 }

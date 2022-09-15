@@ -20,6 +20,9 @@ const Course: React.FC<ICourse> = ({ course }) => {
   const { account } = useWalletInfo();
   const { ownedCourse } = useOwnedCourse(course, account.data);
   const courseState = ownedCourse.data?.state;
+  const isLocked = [COURSE_STATE.PURCHASED, COURSE_STATE.DEACTIVATED].includes(
+    courseState
+  );
 
   const lectures = [
     "How to init App",
@@ -68,7 +71,11 @@ const Course: React.FC<ICourse> = ({ course }) => {
           )}
         </div>
       )}
-      <CourseCurriculam lectures={lectures} locked={true} />
+      <CourseCurriculam
+        lectures={lectures}
+        locked={isLocked}
+        state={courseState}
+      />
       <Modal open={false} />
     </>
   );

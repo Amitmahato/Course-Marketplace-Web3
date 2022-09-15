@@ -1,11 +1,14 @@
+import { COURSE_STATE } from "@utils/normalize";
+import Link from "next/link";
 import React from "react";
 
 interface ICurriculam {
   lectures: string[];
   locked: boolean;
+  state: COURSE_STATE;
 }
 
-const Curriculam: React.FC<ICurriculam> = ({ lectures, locked }) => {
+const Curriculam: React.FC<ICurriculam> = ({ lectures, locked, state }) => {
   return (
     <section className="max-w-5xl mx-auto">
       <div className="flex flex-col">
@@ -56,12 +59,25 @@ const Curriculam: React.FC<ICurriculam> = ({ lectures, locked }) => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a
-                          href="#"
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          {locked ? "Get Access" : "Play"}
-                        </a>
+                        {state === COURSE_STATE.ACTIVATED ? (
+                          <Link href="/watch">
+                            <a className="text-indigo-600 hover:text-indigo-900">
+                              Watch
+                            </a>
+                          </Link>
+                        ) : state === COURSE_STATE.PURCHASED ? (
+                          <Link href="/faq">
+                            <a className="text-yellow-600 hover:text-yellow-900">
+                              Waiting for Activation
+                            </a>
+                          </Link>
+                        ) : (
+                          <Link href="/marketplace">
+                            <a className="text-indigo-600 hover:text-indigo-900">
+                              Get Access
+                            </a>
+                          </Link>
+                        )}
                       </td>
                     </tr>
                   ))}
