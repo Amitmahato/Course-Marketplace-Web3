@@ -1,5 +1,6 @@
+import { createCourseHash } from "@utils/hash";
 import { normalizeOwnedCourse } from "@utils/normalize";
-import { course, CourseOwnership, IOwnedCourse } from "interfaces/course";
+import { course, IOwnedCourse } from "interfaces/course";
 import { IUseOwnedCourse } from "interfaces/hooks/useOwnedCourse";
 import useSWR from "swr";
 import Web3, { Contract } from "web3";
@@ -11,11 +12,7 @@ export const handler =
       web3 && contract && account ? `web3-ownedCourse-${account}` : null,
       async () => {
         if (course.id) {
-          const hexCourseId = web3.utils.utf8ToHex(course.id);
-          const courseHash = web3.utils.soliditySha3(
-            { type: "bytes16", value: hexCourseId },
-            { type: "bytes20", value: account }
-          );
+          const courseHash = createCourseHash(web3)(course.id, account);
 
           const ownedCourse = await contract.methods
             .getCourseByHash(courseHash)

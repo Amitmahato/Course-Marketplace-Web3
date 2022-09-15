@@ -1,3 +1,4 @@
+import { createCourseHash } from "@utils/hash";
 import { normalizeOwnedCourse } from "@utils/normalize";
 import { course, IOwnedCourse } from "interfaces/course";
 import { IUseOwnedCourses } from "interfaces/hooks/useOwnedCourses";
@@ -16,11 +17,7 @@ export const handler =
           const course = courses[index];
 
           if (course.id) {
-            const hexCourseId = web3.utils.utf8ToHex(course.id);
-            const courseHash = web3.utils.soliditySha3(
-              { type: "bytes16", value: hexCourseId },
-              { type: "bytes20", value: account }
-            );
+            const courseHash = createCourseHash(web3)(course.id, account);
 
             const ownedCourse = await contract.methods
               .getCourseByHash(courseHash)
@@ -35,7 +32,6 @@ export const handler =
             }
           }
         }
-
         return ownedCourses;
       }
     );
