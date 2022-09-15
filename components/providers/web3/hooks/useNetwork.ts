@@ -26,15 +26,14 @@ export const handler =
       }
     );
 
-    const networkListener = (provider: any) => {
-      provider.on("chainChanged", (chainId: string) => {
-        mutate(NETWORKS[parseInt(chainId, 16)] ?? "");
-      });
+    const networkListener = (chainId: string) => {
+      mutate(NETWORKS[parseInt(chainId, 16)] ?? "");
     };
 
     useEffect(() => {
       if (provider) {
-        networkListener(provider);
+        provider.on("chainChanged", networkListener);
+        return () => provider.removeListener("chainChanged", networkListener);
       }
     }, [web3]);
 

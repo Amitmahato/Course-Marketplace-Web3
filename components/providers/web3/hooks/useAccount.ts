@@ -17,15 +17,14 @@ export const handler = (web3: Web3, provider: any) => (): IUseAccount => {
     }
   );
 
-  const accountListener = (provider: any) => {
-    provider.on("accountsChanged", (_accounts: string[]) => {
-      mutate(_accounts[0] ?? "");
-    });
+  const accountListener = (_accounts: string[]) => {
+    mutate(_accounts[0] ?? "");
   };
 
   useEffect(() => {
     if (provider) {
-      accountListener(provider);
+      provider.on("accountsChanged", accountListener);
+      return () => provider.removeListener("accountsChanged", accountListener);
     }
   }, [provider]);
 
