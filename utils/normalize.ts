@@ -1,6 +1,12 @@
 import { course, CourseOwnership } from "interfaces/course";
 import Web3 from "web3";
 
+export enum COURSE_STATE {
+  PURCHASED = "purchased",
+  ACTIVATED = "activated",
+  DEACTIVATED = "deactivated",
+}
+
 export const COURSE_STATES = {
   0: "purchased",
   1: "activated",

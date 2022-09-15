@@ -23,14 +23,16 @@ const Message: React.FC<PropsWithChildren & { type: MessageTypes }> = ({
   }
 
   const messageType = MessageType[type];
+  const bgColor = `bg-${messageType}-100`;
+  const textColor = `text-${messageType}-900`;
 
   return (
-    <div className={`bg-${messageType}-100 rounded-xl mb-3`}>
+    <div className={`${bgColor} rounded-xl mb-3`}>
       <div className="max-w-7xl mx-auto py-3 px-3 sm:px-3 lg:px-3">
         <div className="flex items-center justify-between flex-wrap">
           <div className="w-0 flex-1 flex items-center">
-            <p className={`ml-3 font-medium text-${messageType}-900 truncate`}>
-              <span className="hidden md:inline">{children}</span>
+            <p className={`ml-3 font-medium ${textColor}`}>
+              <span className="md:inline">{children}</span>
             </p>
           </div>
           <div className="order-2 flex-shrink-0 sm:order-3 sm:ml-3">
@@ -41,7 +43,7 @@ const Message: React.FC<PropsWithChildren & { type: MessageTypes }> = ({
             >
               <span className="sr-only">Dismiss</span>
               <svg
-                className={`h-6 w-6 text-${messageType}-900`}
+                className={`h-6 w-6 ${textColor}`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"

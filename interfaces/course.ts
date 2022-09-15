@@ -15,6 +15,6 @@ export interface CourseOwnership {
   id: string;
   proof: string;
   owner: string;
-  state: number;
+  state: string;
   price: string;
 }
