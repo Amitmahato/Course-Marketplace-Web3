@@ -4,9 +4,11 @@ import { EthereumRate, Wallet } from "@components/ui/web3";
 const Header = () => {
   return (
     <>
-      <Wallet />
+      <div className="pt-4">
+        <Wallet />
+      </div>
       <EthereumRate />
-      <div className="flex flex-row-reverse pt-4 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-row-reverse p-4 sm:px-6 lg:px-8">
         <Breadcrumb />
       </div>
     </>

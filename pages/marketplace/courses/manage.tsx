@@ -6,12 +6,10 @@ import { MarketHeader } from "@components/ui/marketplace";
 const ManageCourses = () => {
   return (
     <>
-      <div className="py-4">
-        <MarketHeader />
-        <CourseFilter />
-      </div>
+      <MarketHeader />
+      <CourseFilter />
       <section className="grid grid-cols-1">
-        <OwnedCourseCard>
+        <OwnedCourseCard course={null}>
           <div className="flex mr-2 relative rounded-md">
             <input
               type="text"
