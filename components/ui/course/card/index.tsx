@@ -31,11 +31,13 @@ const List: React.FC<ICourse> = ({ course, disabled = false, Footer }) => {
             {course.type}
           </div>
           <Link href={`/courses/${course.slug}`}>
-            <a className="block mt-1 text-lg leading-tight font-medium text-black hover:underline">
+            <a className="block mt-1 text-sm sm:text-lg leading-tight font-medium text-black hover:underline">
               {course.title}
             </a>
           </Link>
-          <p className="mt-2 text-gray-500">{course.description}</p>
+          <p className="mt-2 text-sm sm:text-base text-gray-500">
+            {course.description}
+          </p>
           {Footer && (
             <div className="mt-4 flex-1 flex">
               <div className="h-45 flex flex-col justify-end">
