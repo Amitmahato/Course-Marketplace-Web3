@@ -33,6 +33,7 @@ const Course: React.FC<ICourse> = ({ course }) => {
     <>
       <div className="py-4">
         <CourseHero
+          hasOwner={ownedCourse.data?.owner === account.data}
           title={course.title}
           description={course.description}
           coverImage={course.coverImage}

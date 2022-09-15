@@ -1,5 +1,5 @@
 import { normalizeOwnedCourse } from "@utils/normalize";
-import { course } from "interfaces/course";
+import { course, CourseOwnership } from "interfaces/course";
 import { IUseOwnedCourse } from "interfaces/hooks/useOwnedCourse";
 import useSWR from "swr";
 import Web3, { Contract } from "web3";
@@ -7,7 +7,7 @@ import Web3, { Contract } from "web3";
 export const handler =
   (web3: Web3, contract: Contract) =>
   (course: course, account: string): IUseOwnedCourse => {
-    const swrResponse = useSWR(
+    const swrResponse = useSWR<course & CourseOwnership>(
       web3 && contract && account ? `web3-ownedCourse-${account}` : null,
       async () => {
         if (course.id) {
