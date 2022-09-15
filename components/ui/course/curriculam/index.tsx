@@ -1,14 +1,21 @@
+import { Loader } from "@components/ui/common";
 import { COURSE_STATE } from "@utils/normalize";
 import Link from "next/link";
 import React from "react";
 
 interface ICurriculam {
+  loading: boolean;
   lectures: string[];
   locked: boolean;
   state: COURSE_STATE;
 }
 
-const Curriculam: React.FC<ICurriculam> = ({ lectures, locked, state }) => {
+const Curriculam: React.FC<ICurriculam> = ({
+  loading,
+  lectures,
+  locked,
+  state,
+}) => {
   return (
     <section className="max-w-5xl mx-auto">
       <div className="flex flex-col">
@@ -59,7 +66,9 @@ const Curriculam: React.FC<ICurriculam> = ({ lectures, locked, state }) => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        {state === COURSE_STATE.ACTIVATED ? (
+                        {loading ? (
+                          <Loader size="sm" />
+                        ) : state === COURSE_STATE.ACTIVATED ? (
                           <Link href="/watch">
                             <a className="text-indigo-600 hover:text-indigo-900">
                               Watch

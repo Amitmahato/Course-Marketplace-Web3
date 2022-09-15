@@ -1,5 +1,6 @@
 import { useOwnedCourse } from "@components/hooks/web3/useOwnedCourse";
 import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
+import { useWeb3 } from "@components/providers";
 import { Message, Modal } from "@components/ui/common";
 import { MessageTypes } from "@components/ui/common/message";
 import {
@@ -17,12 +18,11 @@ interface ICourse {
 }
 
 const Course: React.FC<ICourse> = ({ course }) => {
+  const { isLoading } = useWeb3();
   const { account } = useWalletInfo();
   const { ownedCourse } = useOwnedCourse(course, account.data);
   const courseState = ownedCourse.data?.state;
-  const isLocked = [COURSE_STATE.PURCHASED, COURSE_STATE.DEACTIVATED].includes(
-    courseState
-  );
+  const isLocked = COURSE_STATE.ACTIVATED != courseState;
 
   const lectures = [
     "How to init App",
@@ -72,6 +72,7 @@ const Course: React.FC<ICourse> = ({ course }) => {
         </div>
       )}
       <CourseCurriculam
+        loading={isLoading}
         lectures={lectures}
         locked={isLocked}
         state={courseState}
