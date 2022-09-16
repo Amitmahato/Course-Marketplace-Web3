@@ -24,3 +24,8 @@ export interface CourseOwnership {
 export interface IOwnedCourse extends course, CourseOwnership {
   ownedCourseId: string;
 }
+
+export interface IManagedCourse extends CourseOwnership {
+  ownedCourseId: string;
+  hash: string;
+}

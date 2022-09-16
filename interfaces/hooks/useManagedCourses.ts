@@ -1,7 +1,7 @@
-import { IOwnedCourse } from "interfaces/course";
+import { IManagedCourse } from "interfaces/course";
 import { SWRResponse } from "swr";
 
 export interface IUseManagedCourses {
-  managedCourses: SWRResponse<IOwnedCourse[]>;
+  managedCourses: SWRResponse<IManagedCourse[]>;
   isInitialised: boolean;
 }

@@ -1,4 +1,4 @@
-import { course, IOwnedCourse } from "interfaces/course";
+import { course, IManagedCourse, IOwnedCourse } from "interfaces/course";
 import Web3 from "web3";
 
 export enum COURSE_STATE {
@@ -19,7 +19,7 @@ export const normalizeOwnedCourse =
     course: course,
     ownedCourse: Partial<IOwnedCourse>,
     extendedParam: Object
-  ): IOwnedCourse => {
+  ): IOwnedCourse | IManagedCourse => {
     return {
       ...course,
       ownedCourseId: String(ownedCourse.id),
