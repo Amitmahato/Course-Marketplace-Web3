@@ -4,6 +4,7 @@ import { handler as createUseAccount } from "./useAccount";
 import { handler as createNetworkHook } from "./useNetwork";
 import { handler as createOwnedCoursesHook } from "./useOwnedCourses";
 import { handler as createOwnedCourseHook } from "./useOwnedCourse";
+import { handler as createManagedCoursesHook } from "./useManagedCourses";
 
 /**
  * The method registered in the default value should contain exactly the same
@@ -37,5 +38,6 @@ export const setupHooks = (
     useNetwork: createNetworkHook(web3, provider),
     useOwnedCourses: createOwnedCoursesHook(web3, contract),
     useOwnedCourse: createOwnedCourseHook(web3, contract),
+    useManagedCourses: createManagedCoursesHook(web3, contract),
   };
 };

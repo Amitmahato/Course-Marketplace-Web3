@@ -1,9 +1,13 @@
-import { Button } from "@components/ui/common";
+import { useManagedCourses } from "@components/hooks/web3/useManagedCourses";
+import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import { CourseFilter } from "@components/ui/course";
-import OwnedCourseCard from "@components/ui/course/card/OwnedCourseCard";
 import { MarketHeader } from "@components/ui/marketplace";
 
 const ManageCourses = () => {
+  const { account } = useWalletInfo();
+  const { managedCourses } = useManagedCourses(account.data);
+
+  console.log("Managed Courses: ", managedCourses.data);
   return (
     <>
       <MarketHeader />
