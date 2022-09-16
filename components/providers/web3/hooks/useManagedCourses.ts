@@ -1,3 +1,4 @@
+import { normalizeOwnedCourse } from "@utils/normalize";
 import { IOwnedCourse } from "interfaces/course";
 import { IUseManagedCourses } from "interfaces/hooks/useManagedCourses";
 import useSWR from "swr";
@@ -9,8 +10,26 @@ export const handler =
     const swrResponse = useSWR<IOwnedCourse[]>(
       web3 && contract && account ? `web3-manageCourses-${account}` : null,
       async () => {
-        const ownedCourses: IOwnedCourse[] = [];
-        return ownedCourses;
+        const managedCourses: IOwnedCourse[] = [];
+        const courseCount = await contract.methods.getCourseCount().call();
+
+        for (let i = 0; i < Number(courseCount); i++) {
+          const courseHash = await contract.methods
+            .getCourseHashAtIndex(i)
+            .call();
+          const course = await contract.methods
+            .getCourseByHash(courseHash)
+            .call();
+
+          if (course) {
+            const normalizedCourse = normalizeOwnedCourse(web3)(null, course, {
+              hash: courseHash,
+            });
+            managedCourses.push(normalizedCourse);
+          }
+        }
+
+        return managedCourses;
       }
     );
 

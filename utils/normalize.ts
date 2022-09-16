@@ -15,7 +15,11 @@ export const COURSE_STATES = {
 
 export const normalizeOwnedCourse =
   (web3: Web3) =>
-  (course: course, ownedCourse: Partial<IOwnedCourse>): IOwnedCourse => {
+  (
+    course: course,
+    ownedCourse: Partial<IOwnedCourse>,
+    extendedParam: Object
+  ): IOwnedCourse => {
     return {
       ...course,
       ownedCourseId: String(ownedCourse.id),
@@ -23,5 +27,6 @@ export const normalizeOwnedCourse =
       owner: ownedCourse.owner,
       price: web3.utils.fromWei(ownedCourse.price),
       state: COURSE_STATES[ownedCourse.state],
+      ...extendedParam,
     };
   };
