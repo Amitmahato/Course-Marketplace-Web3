@@ -11,16 +11,15 @@ contract("CourseMarketplace", (accounts) => {
   let _contract = null;
   let contractOwner = null; // accounts[0] => 0x24f968F05696b1F7322A8772f76eF46Bb3D38414
   let buyer = null; // accounts[0] => 0x1631d6e4b2921Bd8A78B32CC77eF57F231F8F7B2
+  let courseHash;
 
   before(async () => {
     _contract = await CourseMarketplace.deployed();
-    contractOwner = accounts[0];
+    contractOwner = await _contract.getContractOwner();
     buyer = accounts[1];
   });
 
   describe("Purchase a new course", () => {
-    let courseHash;
-
     before(async () => {
       await _contract.purchaseCourse(courseId, proof, {
         from: buyer,
@@ -80,6 +79,26 @@ contract("CourseMarketplace", (accounts) => {
         course.state,
         expectedState,
         `Purchase course state should be ${expectedState}`
+      );
+    });
+  });
+
+  describe("Activate the purchased course", () => {
+    before(async () => {
+      await _contract.activateCourse(courseHash, {
+        from: contractOwner,
+      });
+    });
+
+    it("should have 'activated' status for the purchased course", async () => {
+      const expectedState = 1;
+
+      const course = await _contract?.getCourseByHash(courseHash);
+
+      assert.equal(
+        course.state,
+        expectedState,
+        `Purchase course state should be ${expectedState} - activated`
       );
     });
   });
