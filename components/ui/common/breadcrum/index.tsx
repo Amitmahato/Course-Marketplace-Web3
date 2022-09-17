@@ -1,7 +1,13 @@
 import ActiveLink from "../ActiveLink";
 import React from "react";
 
-const LINKS = [
+interface ILinks {
+  href: string;
+  value: string;
+  policy?: { admin: boolean };
+}
+
+const LINKS: ILinks[] = [
   {
     href: "/marketplace",
     value: "Buy",
@@ -13,14 +19,17 @@ const LINKS = [
   {
     href: "/marketplace/courses/manage",
     value: "Manage Courses",
+    policy: { admin: true },
   },
 ];
 
-export default function Breadcrumb() {
+export default function Breadcrumb({ isAdmin }: { isAdmin: boolean }) {
   return (
     <nav aria-label="breadcrumb">
       <ol className="flex leading-none divide-x divide-gray-400">
-        {LINKS.map((item, index) => (
+        {LINKS.filter((item: ILinks) =>
+          item.hasOwnProperty("policy") ? item.policy?.admin === isAdmin : true
+        ).map((item, index) => (
           <li
             key={item.href}
             className={`${

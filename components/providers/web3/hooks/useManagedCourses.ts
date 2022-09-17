@@ -1,14 +1,17 @@
 import { normalizeOwnedCourse } from "@utils/normalize";
 import { IManagedCourse } from "interfaces/course";
+import { IAccount } from "interfaces/hooks/useAccount";
 import { IUseManagedCourses } from "interfaces/hooks/useManagedCourses";
 import useSWR from "swr";
 import Web3, { Contract } from "web3";
 
 export const handler =
   (web3: Web3, contract: Contract) =>
-  (account: string): IUseManagedCourses => {
+  (account: IAccount): IUseManagedCourses => {
     const swrResponse = useSWR<IManagedCourse[]>(
-      web3 && contract && account ? `web3-manageCourses-${account}` : null,
+      web3 && contract && account.isAdmin
+        ? `web3-manageCourses-${account}`
+        : null,
       async () => {
         const managedCourses: IManagedCourse[] = [];
         const courseCount = await contract.methods.getCourseCount().call();

@@ -1,5 +1,5 @@
+import { useAdmin } from "@components/hooks/web3/useAdmin";
 import { useManagedCourses } from "@components/hooks/web3/useManagedCourses";
-import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import { useWeb3 } from "@components/providers";
 import { Button, Message } from "@components/ui/common";
 import { MessageTypes } from "@components/ui/common/message";
@@ -47,8 +47,8 @@ const VerifyEmail: React.FC<{
 const ManageCourses = () => {
   const [ownershipProved, setOwnershipProved] = useState({});
   const { web3 } = useWeb3();
-  const { account } = useWalletInfo();
-  const { managedCourses, isInitialised } = useManagedCourses(account.data);
+  const { account } = useAdmin({ redirectTo: "/marketplace" });
+  const { managedCourses, isInitialised } = useManagedCourses(account);
 
   const verifyCourseOwnership = (
     email: string,
@@ -74,7 +74,7 @@ const ManageCourses = () => {
     }
   };
 
-  return (
+  return account.isAdmin ? (
     <>
       <MarketHeader />
       <CourseFilter />
@@ -103,6 +103,6 @@ const ManageCourses = () => {
           ))}
       </section>
     </>
-  );
+  ) : null;
 };
 export default ManageCourses;

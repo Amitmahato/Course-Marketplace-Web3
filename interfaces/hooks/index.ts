@@ -1,5 +1,5 @@
 import { course } from "interfaces/course";
-import { IUseAccount } from "./useAccount";
+import { IAccount, IUseAccount } from "./useAccount";
 import { IUseNetwork } from "./useNetwork";
 import { IUseOwnedCourses } from "./useOwnedCourses";
 import { IUseOwnedCourse } from "./useOwnedCourse";
@@ -10,7 +10,7 @@ interface IHooks {
   useNetwork: () => IUseNetwork;
   useOwnedCourses: (courses: course[], account: string) => IUseOwnedCourses;
   useOwnedCourse: (courses: course, account: string) => IUseOwnedCourse;
-  useManagedCourses: (account: string) => IUseManagedCourses;
+  useManagedCourses: (account: IAccount) => IUseManagedCourses;
 }
 
 export type { IUseAccount, IHooks };
