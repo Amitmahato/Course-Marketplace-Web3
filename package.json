@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "truffle test",
     "preetify": "prettier --write 'contracts/**/*.sol'",
     "lint": "next lint && prettier --list-different 'contracts/**/*.sol'"
   },
