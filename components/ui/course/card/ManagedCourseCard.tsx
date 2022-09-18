@@ -32,6 +32,7 @@ const ManagedCourseCard: React.FC<
             .filter((key) => course[key])
             .map((key, index) => (
               <Item
+                key={index}
                 title={camelCaseToTitleCaseString(key)}
                 value={course[key]}
                 {...(index % 2 === 1 ? { className: "bg-white-50" } : {})}

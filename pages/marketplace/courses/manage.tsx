@@ -5,6 +5,8 @@ import { Button, Message } from "@components/ui/common";
 import { MessageTypes } from "@components/ui/common/message";
 import { CourseFilter, ManagedCourseCard } from "@components/ui/course";
 import { MarketHeader } from "@components/ui/marketplace";
+import { COURSE_STATE } from "@utils/normalize";
+import { IManagedCourse } from "interfaces/course";
 import { useState } from "react";
 
 const VerifyEmail: React.FC<{
@@ -46,7 +48,7 @@ const VerifyEmail: React.FC<{
 
 const ManageCourses = () => {
   const [ownershipProved, setOwnershipProved] = useState({});
-  const { web3 } = useWeb3();
+  const { web3, contract } = useWeb3();
   const { account } = useAdmin({ redirectTo: "/marketplace" });
   const { managedCourses, isInitialised } = useManagedCourses(account);
 
@@ -74,6 +76,17 @@ const ManageCourses = () => {
     }
   };
 
+  const activateCourse = async (course: IManagedCourse) => {
+    try {
+      await contract.methods.activateCourse(course.hash).send({
+        from: account.data,
+      });
+      managedCourses.mutate();
+    } catch (err) {
+      console.log("Failed to activate the course with error: ", err);
+    }
+  };
+
   return account.isAdmin ? (
     <>
       <MarketHeader />
@@ -81,7 +94,7 @@ const ManageCourses = () => {
       <section className="grid grid-cols-1">
         {isInitialised &&
           managedCourses.data?.map((course, index) => (
-            <ManagedCourseCard course={course}>
+            <ManagedCourseCard course={course} key={index}>
               <VerifyEmail
                 key={index}
                 onEmailChange={() => {
@@ -99,6 +112,16 @@ const ManageCourses = () => {
                 }}
                 verified={ownershipProved[course.hash]}
               />
+              {course.state === COURSE_STATE.PURCHASED && (
+                <div className="mt-2">
+                  <Button
+                    title="Activate"
+                    variant="green"
+                    onClick={() => activateCourse(course)}
+                  />
+                  <Button title="Deactivate" variant="red" />
+                </div>
+              )}
             </ManagedCourseCard>
           ))}
       </section>

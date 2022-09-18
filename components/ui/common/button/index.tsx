@@ -3,7 +3,7 @@ interface IButton {
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
-  variant?: "red" | "purple" | "lightPurple" | "white";
+  variant?: "red" | "purple" | "lightPurple" | "white" | "green";
 }
 
 const Button: React.FC<IButton> = ({
@@ -16,6 +16,7 @@ const Button: React.FC<IButton> = ({
   const buttonVariant = {
     red: `text-white bg-red-600 ${!disabled && "hover:bg-red-700"}`,
     purple: `text-white bg-indigo-600 ${!disabled && "hover:bg-indigo-700"}`,
+    green: `text-white bg-green-600 ${!disabled && "hover:bg-green-700"}`,
     lightPurple: `text-indigo-700 bg-indigo-100 ${
       !disabled && "hover:bg-indigo-200"
     }`,
@@ -25,7 +26,7 @@ const Button: React.FC<IButton> = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`disabled:opacity-50 disabled:cursor-not-allowed xs:px-8 xs:py-3 p-2 border rounded-md text-base font-medium ${buttonVariant[variant]} ${className}`}
+      className={`cursor:pointer disabled:opacity-50 disabled:cursor-not-allowed xs:px-8 xs:py-3 p-2 border rounded-md text-base font-medium ${buttonVariant[variant]} ${className}`}
     >
       {title}
     </button>
