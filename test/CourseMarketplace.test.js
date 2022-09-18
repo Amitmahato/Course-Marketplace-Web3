@@ -8,6 +8,11 @@ contract("CourseMarketplace", (accounts) => {
   const courseId = "0x00000000000000000000000000003130";
   const proof =
     "0x0000000000000000000000000000313000000000000000000000000000003130";
+
+  const course2Id = "0x00000000000000000000000000003131";
+  const proof2 =
+    "0x0000000000000000000000000000313100000000000000000000000000003131";
+
   const value = "900000000"; // 0.9 ETH
 
   let _contract = null;
@@ -154,6 +159,56 @@ contract("CourseMarketplace", (accounts) => {
       assert(
         owner === contractOwner,
         "Contract owner should be set to the initial owner"
+      );
+    });
+  });
+
+  describe("Purchase & Deactivate the recently purchased course", () => {
+    let courseHash;
+
+    before(async () => {
+      await _contract.purchaseCourse(course2Id, proof2, {
+        from: buyer,
+        value,
+      });
+      courseHash = await _contract.getCourseHashAtIndex(1);
+    });
+
+    it("should not be able to deactivate the purchased course by the buyer", async () => {
+      await catchRevert(
+        _contract.deactivateCourse(courseHash, {
+          from: buyer,
+        })
+      );
+    });
+
+    it("should be able to deactivate the purchased course by the contract owner", async () => {
+      await _contract.deactivateCourse(courseHash, {
+        from: contractOwner,
+      });
+    });
+
+    it("should have the course price 0 and state 2", async () => {
+      const expectedState = 2;
+      const expectedPrice = 0;
+
+      const course = await _contract.getCourseByHash(courseHash);
+
+      assert.equal(
+        course.state,
+        expectedState,
+        "Course should have the state of deactivated"
+      );
+      assert.equal(
+        course.price,
+        expectedPrice,
+        "Deactivated course price should be set to zero"
+      );
+    });
+
+    it("should not be able to activate the deactivated course", async () => {
+      await catchRevert(
+        _contract.activateCourse(courseHash, { from: contractOwner })
       );
     });
   });
