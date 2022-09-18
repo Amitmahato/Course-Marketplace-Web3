@@ -83,6 +83,15 @@ contract("CourseMarketplace", (accounts) => {
         `Purchase course state should be ${expectedState}`
       );
     });
+
+    it("should not allow re-purchase already owned course", async () => {
+      await catchRevert(
+        _contract.purchaseCourse(courseId, proof, {
+          from: buyer,
+          value,
+        })
+      );
+    });
   });
 
   describe("Activate the purchased course", () => {
