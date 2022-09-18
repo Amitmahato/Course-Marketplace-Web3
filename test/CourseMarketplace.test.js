@@ -110,4 +110,42 @@ contract("CourseMarketplace", (accounts) => {
       );
     });
   });
+
+  describe("Transfer contract ownership", () => {
+    it("should not be able to transfer contract ownership", async () => {
+      await catchRevert(
+        _contract.transferOwnership(buyer, {
+          from: buyer,
+        })
+      );
+    });
+
+    it("should be able to transfer contract ownership to buyer", async () => {
+      await _contract.transferOwnership(buyer, {
+        from: contractOwner,
+      });
+
+      const owner = await _contract.getContractOwner();
+
+      assert(owner === buyer, `Contract owner should be the buyer`);
+      assert(
+        owner !== contractOwner,
+        `Contract owner should not be the initial owner`
+      );
+    });
+
+    it("should be able to transfer contract ownership to initial owner", async () => {
+      await _contract.transferOwnership(contractOwner, {
+        from: buyer,
+      });
+
+      const owner = await _contract.getContractOwner();
+
+      assert(owner !== buyer, "Contract owner should not be the buyer");
+      assert(
+        owner === contractOwner,
+        "Contract owner should be set to the initial owner"
+      );
+    });
+  });
 });
