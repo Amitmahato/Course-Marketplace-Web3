@@ -1,5 +1,7 @@
 // Run test with `truffle test`
 
+const { catchRevert } = require("./utils/exception");
+
 const CourseMarketplace = artifacts.require("CourseMarketplace");
 
 contract("CourseMarketplace", (accounts) => {
@@ -84,14 +86,20 @@ contract("CourseMarketplace", (accounts) => {
   });
 
   describe("Activate the purchased course", () => {
-    before(async () => {
-      await _contract.activateCourse(courseHash, {
-        from: contractOwner,
-      });
+    it("should not be able to activate the purchased course", async () => {
+      await catchRevert(
+        _contract.activateCourse(courseHash, {
+          from: buyer,
+        })
+      );
     });
 
     it("should have 'activated' status for the purchased course", async () => {
       const expectedState = 1;
+
+      await _contract.activateCourse(courseHash, {
+        from: contractOwner,
+      });
 
       const course = await _contract?.getCourseByHash(courseHash);
 
