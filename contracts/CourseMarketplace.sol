@@ -123,6 +123,27 @@ contract CourseMarketplace {
     }
   }
 
+  function deactivateCourse(bytes32 courseHash) external onlyOwner {
+    if (!isCourseCreated(courseHash)) {
+      revert CourseNotFound();
+    }
+
+    Course storage course = ownedCourses[courseHash];
+
+    // if course is already activated there is no going back
+    // if already deactivated no need to perform this transaction
+    if (course.state != State.Purchased) {
+      revert InvalidCourseState();
+    }
+
+    // transfer the amount received during course purchase back to the owner
+    (bool success, ) = course.owner.call{value: course.price}("");
+    require(success, "Transfer Failed");
+
+    course.state = State.Deactivated;
+    course.price = 0;
+  }
+
   /**
    *  Get the total number of courses
    */
