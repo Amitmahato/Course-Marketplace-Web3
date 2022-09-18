@@ -99,7 +99,7 @@ contract("CourseMarketplace", (accounts) => {
     });
   });
 
-  describe("Activate the purchased course", () => {
+  describe("Activate the purchased course 👆👆👆", () => {
     it("should not be able to activate the purchased course", async () => {
       await catchRevert(
         _contract.activateCourse(courseHash, {
@@ -209,6 +209,52 @@ contract("CourseMarketplace", (accounts) => {
     it("should not be able to activate the deactivated course", async () => {
       await catchRevert(
         _contract.activateCourse(courseHash, { from: contractOwner })
+      );
+    });
+  });
+
+  describe("Repurchase course the deactivated course 👆👆👆", () => {
+    let courseHash = null;
+
+    before(async () => {
+      courseHash = await _contract.getCourseHashAtIndex(1);
+    });
+
+    it("should not allow repurchase of a non-existing course", async () => {
+      const notExistingCourseHash =
+        "0x5ceb3f8075c3dbb5d490c8d1e6c950302ed065e1a9031750ad2c6513069e3fc3";
+      await catchRevert(
+        _contract.repurchaseCourse(notExistingCourseHash, { from: buyer })
+      );
+    });
+
+    it("should not allow repurchase the course which is not already owned by the sender", async () => {
+      await catchRevert(
+        _contract.repurchaseCourse(courseHash, { from: contractOwner })
+      );
+    });
+
+    it("should be able repurchase the course by the original buyer", async () => {
+      const exptectedState = 0;
+
+      await _contract.repurchaseCourse(courseHash, { from: buyer, value });
+      const course = await _contract.getCourseByHash(courseHash);
+
+      assert.equal(
+        course.state,
+        exptectedState,
+        "The course is not in purchased state"
+      );
+      assert.equal(
+        course.price,
+        value,
+        `The course price is not equal to ${value}`
+      );
+    });
+
+    it("should not be able to repurchase the purchased course", async () => {
+      await catchRevert(
+        _contract.repurchaseCourse(courseHash, { from: buyer })
       );
     });
   });
