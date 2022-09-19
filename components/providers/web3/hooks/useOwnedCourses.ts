@@ -27,7 +27,7 @@ export const handler =
 
             if (courseOwner !== "0") {
               ownedCourses.push(
-                normalizeOwnedCourse(web3)(course, ownedCourse)
+                normalizeOwnedCourse(web3)(course, ownedCourse) as IOwnedCourse
               );
             }
           }
@@ -39,5 +39,10 @@ export const handler =
     return {
       ownedCourses: swrResponse,
       isInitialised: !!(swrResponse.data || swrResponse.error),
+      lookUp:
+        swrResponse.data?.reduce((acc, course) => {
+          acc[course.id] = course;
+          return acc;
+        }, {}) ?? {},
     };
   };

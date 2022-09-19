@@ -1,17 +1,19 @@
 import { CourseCard, CourseList } from "@components/ui/course";
 import { getAllCourses } from "@content/courses/fetcher";
 import React, { useState } from "react";
-import { Button } from "@components/ui/common";
+import { Button, Loader } from "@components/ui/common";
 import { IOrderState, OrderModal } from "@components/ui/order";
 import { course } from "interfaces/course";
 import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import { MarketHeader } from "@components/ui/marketplace";
 import { useWeb3 } from "@components/providers";
+import { useOwnedCourses } from "@components/hooks/web3/useOwnedCourses";
 
 export default function Marketplace({ courses }) {
   const { canPurchaseCourse, account } = useWalletInfo();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
   const { contract, web3 } = useWeb3();
+  const { isInitialised, lookUp } = useOwnedCourses(courses, account.data);
 
   const purchaseCourse = async (order: IOrderState) => {
     const hexCourseId = web3.utils.utf8ToHex(selectedCourse.id);
@@ -82,14 +84,32 @@ export default function Marketplace({ courses }) {
             disabled={!canPurchaseCourse}
             key={course.id}
             course={course}
-            Footer={() => (
-              <Button
-                title="Purchase"
-                variant="lightPurple"
-                disabled={!canPurchaseCourse}
-                onClick={() => setSelectedCourse(course)}
-              />
-            )}
+            Footer={() => {
+              if (!isInitialised) {
+                return (
+                  <Button
+                    title="Purchase"
+                    variant="lightPurple"
+                    disabled={true}
+                  >
+                    <Loader size="sm" />
+                  </Button>
+                );
+              }
+
+              if (lookUp[course.id]) {
+                return <Button title="Owned" variant="green" disabled={true} />;
+              }
+
+              return (
+                <Button
+                  title="Purchase"
+                  variant="lightPurple"
+                  disabled={!canPurchaseCourse}
+                  onClick={() => setSelectedCourse(course)}
+                />
+              );
+            }}
           />
         )}
       </CourseList>

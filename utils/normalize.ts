@@ -18,7 +18,7 @@ export const normalizeOwnedCourse =
   (
     course: course,
     ownedCourse: Partial<IOwnedCourse>,
-    extendedParam: Object
+    extendedParam?: Object
   ): IOwnedCourse | IManagedCourse => {
     return {
       ...course,

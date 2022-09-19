@@ -1,3 +1,5 @@
+import React from "react";
+
 interface IButton {
   title: string;
   onClick?: () => void;
@@ -6,12 +8,13 @@ interface IButton {
   variant?: "red" | "purple" | "lightPurple" | "white" | "green";
 }
 
-const Button: React.FC<IButton> = ({
+const Button: React.FC<IButton & React.PropsWithChildren> = ({
   title,
   onClick = () => {},
   disabled,
   className,
   variant = "purple",
+  children,
 }) => {
   const buttonVariant = {
     red: `text-white bg-red-600 ${!disabled && "hover:bg-red-700"}`,
@@ -28,7 +31,7 @@ const Button: React.FC<IButton> = ({
       disabled={disabled}
       className={`cursor:pointer disabled:opacity-50 disabled:cursor-not-allowed xs:px-8 xs:py-3 p-2 border rounded-md text-base font-medium ${buttonVariant[variant]} ${className}`}
     >
-      {title}
+      {children ?? title}
     </button>
   );
 };
