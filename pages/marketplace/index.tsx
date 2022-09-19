@@ -115,12 +115,20 @@ export default function Marketplace({ courses }) {
                 }
                 return (
                   <>
-                    <Button
-                      title="Owned"
-                      variant="green"
-                      disabled={true}
-                      className="w-1/3"
-                    />
+                    <div className="flex flex-row justify-between">
+                      <Button
+                        title="Owned"
+                        variant="green"
+                        disabled={true}
+                        className="w-1/3"
+                      />
+                      {ownedCourse.state === COURSE_STATE.DEACTIVATED && (
+                        <Button
+                          title="Fund to Activate"
+                          variant="lightPurple"
+                        />
+                      )}
+                    </div>
                     <div className="flex-grow mt-1">
                       <Message type={messageType} size="sm">
                         {message}
