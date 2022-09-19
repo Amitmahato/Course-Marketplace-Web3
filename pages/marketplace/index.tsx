@@ -81,74 +81,57 @@ export default function Marketplace({ courses }) {
     <>
       <MarketHeader />
       <CourseList courses={courses}>
-        {(course) => (
-          <CourseCard
-            disabled={!canPurchaseCourse}
-            key={course.id}
-            course={course}
-            Footer={() => {
-              if (!isInitialised) {
+        {(course) => {
+          const ownedCourse = lookUp[course.id] as IOwnedCourse;
+          return (
+            <CourseCard
+              disabled={!canPurchaseCourse}
+              key={course.id}
+              course={course}
+              courseState={ownedCourse?.state}
+              Footer={() => {
+                if (!isInitialised) {
+                  return (
+                    <Button
+                      title="Purchase"
+                      variant="lightPurple"
+                      disabled={true}
+                    >
+                      <Loader size="sm" />
+                    </Button>
+                  );
+                }
+
+                if (ownedCourse) {
+                  return (
+                    <>
+                      <div className="flex flex-row justify-between">
+                        <Button
+                          title="Yours ✔️"
+                          variant="white"
+                          className="w-1/3"
+                        />
+                        {ownedCourse.state === COURSE_STATE.DEACTIVATED && (
+                          <Button title="Fund to Activate" variant="purple" />
+                        )}
+                      </div>
+                    </>
+                  );
+                }
+
                 return (
                   <Button
                     title="Purchase"
                     variant="lightPurple"
-                    disabled={true}
-                  >
-                    <Loader size="sm" />
-                  </Button>
+                    className="w-1/3"
+                    disabled={!canPurchaseCourse}
+                    onClick={() => setSelectedCourse(course)}
+                  />
                 );
-              }
-
-              const ownedCourse = lookUp[course.id] as IOwnedCourse;
-              if (ownedCourse) {
-                let messageType: MessageTypes;
-                let message = "";
-                if (ownedCourse.state === COURSE_STATE.PURCHASED) {
-                  messageType = MessageTypes.warning;
-                  message = "Waiting for activation";
-                } else if (ownedCourse.state === COURSE_STATE.ACTIVATED) {
-                  messageType = MessageTypes.success;
-                  message = "Activated";
-                } else if (ownedCourse.state === COURSE_STATE.DEACTIVATED) {
-                  messageType = MessageTypes.danger;
-                  message = "Deactivated";
-                }
-                return (
-                  <>
-                    <div className="flex flex-row justify-between">
-                      <Button
-                        title="Owned"
-                        variant="green"
-                        disabled={true}
-                        className="w-1/3"
-                      />
-                      {ownedCourse.state === COURSE_STATE.DEACTIVATED && (
-                        <Button
-                          title="Fund to Activate"
-                          variant="lightPurple"
-                        />
-                      )}
-                    </div>
-                    <div className="flex-grow mt-1">
-                      <Message type={messageType} size="sm">
-                        {message}
-                      </Message>
-                    </div>
-                  </>
-                );
-              }
-
-              return (
-                <Button
-                  title="Purchase"
-                  variant="lightPurple"
-                  disabled={!canPurchaseCourse}
-                  onClick={() => setSelectedCourse(course)}
-                />
-              );
-            }}
-          />
-        )}
+              }}
+            />
+          );
+        }}
       </CourseList>
 
       {!!selectedCourse && (

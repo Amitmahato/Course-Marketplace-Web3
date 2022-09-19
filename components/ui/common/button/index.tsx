@@ -29,7 +29,7 @@ const Button: React.FC<IButton & React.PropsWithChildren> = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`cursor:pointer disabled:opacity-50 disabled:cursor-not-allowed xs:px-8 xs:py-3 p-2 border rounded-md text-base font-medium ${buttonVariant[variant]} ${className}`}
+      className={`cursor:pointer disabled:opacity-50 disabled:cursor-not-allowed xs:px-4 xs:py-3 p-1 border rounded-md text-base font-medium ${buttonVariant[variant]} ${className}`}
     >
       {children ?? title}
     </button>
