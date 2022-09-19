@@ -189,9 +189,46 @@ contract("CourseMarketplace", (accounts) => {
     });
 
     it("should be able to deactivate the purchased course by the contract owner", async () => {
-      await _contract.deactivateCourse(courseHash, {
+      const balanceBeforeTransaction = await getBalance(buyer);
+      const contractBalanceBeforeTransaction = await getBalance(
+        _contract.address
+      );
+      const conractOwnerBalanceBeforeTransaction = await getBalance(
+        contractOwner
+      );
+
+      const result = await _contract.deactivateCourse(courseHash, {
         from: contractOwner,
       });
+
+      const gasFee = await getGasFee(result);
+
+      const balanceAfterTransaction = await getBalance(buyer);
+      const contractBalanceAfterTransaction = await getBalance(
+        _contract.address
+      );
+      const conractOwnerBalanceAfterTransaction = await getBalance(
+        contractOwner
+      );
+
+      assert.equal(
+        toBN(balanceBeforeTransaction).add(toBN(value)).toString(),
+        balanceAfterTransaction,
+        "Buyer balance should not be same before & after purchasing the course"
+      );
+
+      assert.equal(
+        toBN(contractBalanceBeforeTransaction).sub(toBN(value)),
+        contractBalanceAfterTransaction,
+        "Contract balance before transaction should increase by the amount of course price after the transaction"
+      );
+
+      // gas fee is paid by the contract owner and no the contract itself sub(gasFee)
+      assert.equal(
+        toBN(conractOwnerBalanceBeforeTransaction).sub(gasFee),
+        conractOwnerBalanceAfterTransaction,
+        "Gas fees should be deucted from the contract owner's account"
+      );
     });
 
     it("should have the course price 0 and state 2", async () => {
