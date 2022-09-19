@@ -8,7 +8,6 @@ import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import { MarketHeader } from "@components/ui/marketplace";
 import { useWeb3 } from "@components/providers";
 import { useOwnedCourses } from "@components/hooks/web3/useOwnedCourses";
-import { MessageTypes } from "@components/ui/common/message";
 import { COURSE_STATE } from "@utils/normalize";
 
 export default function Marketplace({ courses }) {
@@ -75,6 +74,34 @@ export default function Marketplace({ courses }) {
     } catch (e) {
       // will fail you same user tries to purchase any given course twice
       console.log("Failed to purcahse course! Error: ", e);
+    }
+  };
+
+  const repurchaseCourse = async (order: IOrderState) => {
+    try {
+      const hexCourseId = web3.utils.utf8ToHex(selectedCourse.id);
+      const courseHash = web3.utils.soliditySha3(
+        {
+          type: "bytes16",
+          value: hexCourseId,
+        },
+        {
+          type: "bytes20",
+          value: account.data,
+        }
+      );
+
+      const value = web3.utils.toWei(order.price.toString());
+      const result = await contract.methods.repurchaseCourse(courseHash).send({
+        from: account.data,
+        value,
+      });
+      console.log(
+        "Course re-purchased successfully! Transaction details: ",
+        result
+      );
+    } catch (e) {
+      console.log("Failed to re-purcahse course! Error: ", e);
     }
   };
 
@@ -150,7 +177,12 @@ export default function Marketplace({ courses }) {
             setSelectedCourse(null);
           }}
           onSubmit={(order: IOrderState) => {
-            purchaseCourse(order);
+            if (newPurchase) {
+              purchaseCourse(order);
+            } else {
+              repurchaseCourse(order);
+            }
+            setNewPurchase(true);
             setSelectedCourse(null);
           }}
           course={selectedCourse}
