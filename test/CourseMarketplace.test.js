@@ -244,6 +244,9 @@ contract("CourseMarketplace", (accounts) => {
       const exptectedState = 0;
 
       const balanceBeforeTransaction = await getBalance(buyer);
+      const contractBalanceBeforeTransaction = await getBalance(
+        _contract.address
+      );
 
       const result = await _contract.repurchaseCourse(courseHash, {
         from: buyer,
@@ -253,11 +256,20 @@ contract("CourseMarketplace", (accounts) => {
       const gasFee = await getGasFee(result);
 
       const balanceAfterTransaction = await getBalance(buyer);
+      const contractBalanceAfterTransaction = await getBalance(
+        _contract.address
+      );
 
       assert.equal(
         toBN(balanceBeforeTransaction).sub(toBN(value)).sub(gasFee).toString(),
         balanceAfterTransaction,
         "Buyer balance should not be same before & after purchasing the course"
+      );
+
+      assert.equal(
+        toBN(contractBalanceBeforeTransaction).add(toBN(value)),
+        contractBalanceAfterTransaction,
+        "Contract balance should before transaction should increase by the amount of course price after the transaction"
       );
 
       const course = await _contract.getCourseByHash(courseHash);
