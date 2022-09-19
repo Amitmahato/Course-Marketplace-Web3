@@ -23,7 +23,7 @@ const List: React.FC<ICourse> = ({ course, disabled = false, Footer }) => {
             alt={course.title}
             layout="responsive"
             width="200"
-            height="320"
+            height="350"
           />
         </div>
         <div className="flex-2 p-8 pb-4 flex flex-col">
@@ -36,11 +36,11 @@ const List: React.FC<ICourse> = ({ course, disabled = false, Footer }) => {
             </a>
           </Link>
           <p className="mt-2 text-sm sm:text-base text-gray-500">
-            {course.description}
+            {course.description.substring(0, 70)}...
           </p>
           {Footer && (
             <div className="mt-4 flex-1 flex">
-              <div className="h-45 flex flex-col justify-end">
+              <div className="h-45 flex flex-col justify-end flex-grow">
                 <Footer />
               </div>
             </div>

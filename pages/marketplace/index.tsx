@@ -1,13 +1,15 @@
 import { CourseCard, CourseList } from "@components/ui/course";
 import { getAllCourses } from "@content/courses/fetcher";
 import React, { useState } from "react";
-import { Button, Loader } from "@components/ui/common";
+import { Button, Loader, Message } from "@components/ui/common";
 import { IOrderState, OrderModal } from "@components/ui/order";
-import { course } from "interfaces/course";
+import { course, IOwnedCourse } from "interfaces/course";
 import { useWalletInfo } from "@components/hooks/web3/useWalletInfo";
 import { MarketHeader } from "@components/ui/marketplace";
 import { useWeb3 } from "@components/providers";
 import { useOwnedCourses } from "@components/hooks/web3/useOwnedCourses";
+import { MessageTypes } from "@components/ui/common/message";
+import { COURSE_STATE } from "@utils/normalize";
 
 export default function Marketplace({ courses }) {
   const { canPurchaseCourse, account } = useWalletInfo();
@@ -97,8 +99,35 @@ export default function Marketplace({ courses }) {
                 );
               }
 
-              if (lookUp[course.id]) {
-                return <Button title="Owned" variant="green" disabled={true} />;
+              const ownedCourse = lookUp[course.id] as IOwnedCourse;
+              if (ownedCourse) {
+                let messageType: MessageTypes;
+                let message = "";
+                if (ownedCourse.state === COURSE_STATE.PURCHASED) {
+                  messageType = MessageTypes.warning;
+                  message = "Waiting for activation";
+                } else if (ownedCourse.state === COURSE_STATE.ACTIVATED) {
+                  messageType = MessageTypes.success;
+                  message = "Activated";
+                } else if (ownedCourse.state === COURSE_STATE.DEACTIVATED) {
+                  messageType = MessageTypes.danger;
+                  message = "Deactivated";
+                }
+                return (
+                  <>
+                    <Button
+                      title="Owned"
+                      variant="green"
+                      disabled={true}
+                      className="w-1/3"
+                    />
+                    <div className="flex-grow mt-1">
+                      <Message type={messageType} size="sm">
+                        {message}
+                      </Message>
+                    </div>
+                  </>
+                );
               }
 
               return (
