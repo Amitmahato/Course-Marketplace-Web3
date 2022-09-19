@@ -14,6 +14,7 @@ import { COURSE_STATE } from "@utils/normalize";
 export default function Marketplace({ courses }) {
   const { canPurchaseCourse, account } = useWalletInfo();
   const [selectedCourse, setSelectedCourse] = useState<course>(null);
+  const [newPurchase, setNewPurchase] = useState(true);
   const { contract, web3 } = useWeb3();
   const { isInitialised, lookUp } = useOwnedCourses(courses, account.data);
 
@@ -112,7 +113,14 @@ export default function Marketplace({ courses }) {
                           className="w-1/3"
                         />
                         {ownedCourse.state === COURSE_STATE.DEACTIVATED && (
-                          <Button title="Fund to Activate" variant="purple" />
+                          <Button
+                            title="Fund to Activate"
+                            variant="purple"
+                            onClick={() => {
+                              setSelectedCourse(course);
+                              setNewPurchase(false);
+                            }}
+                          />
                         )}
                       </div>
                     </>
@@ -138,6 +146,7 @@ export default function Marketplace({ courses }) {
         <OrderModal
           open={!!selectedCourse}
           onClose={() => {
+            setNewPurchase(true);
             setSelectedCourse(null);
           }}
           onSubmit={(order: IOrderState) => {
@@ -145,6 +154,7 @@ export default function Marketplace({ courses }) {
             setSelectedCourse(null);
           }}
           course={selectedCourse}
+          newPurchase={newPurchase}
         />
       )}
     </>

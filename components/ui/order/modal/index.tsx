@@ -7,11 +7,13 @@ export interface IOrderState {
   price: number;
   email: string;
   confirmEmail: string;
+  newPurchase: boolean;
 }
 
 interface IModal {
   open: boolean;
   course: course;
+  newPurchase: boolean;
   onClose: () => void;
   onSubmit: (order: IOrderState) => void;
 }
@@ -20,6 +22,7 @@ const DefaultOrder: IOrderState = {
   price: 0.0,
   email: "",
   confirmEmail: "",
+  newPurchase: true,
 };
 
 interface FormState {
@@ -30,19 +33,24 @@ interface FormState {
 const createFromState: (
   order: IOrderState,
   hasAgreedTOS: boolean
-) => FormState = ({ price, email, confirmEmail }, hasAgreedTOS) => {
+) => FormState = (
+  { price, email, confirmEmail, newPurchase },
+  hasAgreedTOS
+) => {
   const formState: FormState = { disabled: false, message: [] };
 
   if (!price || price <= 0) {
     formState.message.push("Price is not valid");
   }
 
-  if (email.length === 0 || confirmEmail.length === 0) {
-    formState.message.push("Email cannot be empty");
-  }
+  if (newPurchase) {
+    if (email.length === 0 || confirmEmail.length === 0) {
+      formState.message.push("Email cannot be empty");
+    }
 
-  if (email !== confirmEmail) {
-    formState.message.push("Email & Confirmation Email should match");
+    if (email !== confirmEmail) {
+      formState.message.push("Email & Confirmation Email should match");
+    }
   }
 
   if (!hasAgreedTOS) {
@@ -55,7 +63,14 @@ const createFromState: (
   return formState;
 };
 
-const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
+const OrderModal: React.FC<IModal> = ({
+  open,
+  onClose,
+  onSubmit,
+  course,
+  newPurchase,
+}) => {
+  console.log(newPurchase);
   const [_open, setOpen] = useState(open);
   const { courseEthRate } = useEthPrice();
   const [adjustPrice, setAdjustPrice] = useState(false);
@@ -65,6 +80,7 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
     price: courseEthRate,
     email: "",
     confirmEmail: "",
+    newPurchase,
   });
 
   useEffect(() => {
@@ -147,52 +163,58 @@ const OrderModal: React.FC<IModal> = ({ open, onClose, onSubmit, course }) => {
                   allowed)
                 </p>
               </div>
-              <div className="mt-2 relative rounded-md">
-                <div className="mb-1">
-                  <label className="mb-2 font-bold">Email</label>
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={order.email}
-                  onChange={(e) => {
-                    const email = e.target.value.trim();
-                    setOrder({
-                      ...order,
-                      email,
-                    });
-                  }}
-                  className="w-80 focus:ring-indigo-500 shadow-md focus:border-indigo-500 block pl-7 p-4 sm:text-sm border-gray-300 rounded-md"
-                  placeholder="x@y.com"
-                />
-                <p className="text-xs text-gray-700 mt-1">
-                  It&apos;s important to fill a correct email, otherwise the
-                  order cannot be verified. We are not storing your email
-                  anywhere
-                </p>
-              </div>
-              <div className="my-2 relative rounded-md">
-                <div className="mb-1">
-                  <label className="mb-2 font-bold">Confirmation Email</label>
-                </div>
-                <input
-                  type="email"
-                  name="confirmationEmail"
-                  id="confirmationEmail"
-                  value={order.confirmEmail}
-                  onChange={(e) => {
-                    const confirmEmail = e.target.value.trim();
-                    setOrder({
-                      ...order,
-                      confirmEmail,
-                    });
-                  }}
-                  className="w-80 focus:ring-indigo-500 shadow-md focus:border-indigo-500 block pl-7 p-4 sm:text-sm border-gray-300 rounded-md"
-                  placeholder="x@y.com"
-                />
-              </div>
-              <div className="text-xs text-gray-700 flex">
+              {newPurchase && (
+                <>
+                  <div className="mt-2 relative rounded-md">
+                    <div className="mb-1">
+                      <label className="mb-2 font-bold">Email</label>
+                    </div>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      value={order.email}
+                      onChange={(e) => {
+                        const email = e.target.value.trim();
+                        setOrder({
+                          ...order,
+                          email,
+                        });
+                      }}
+                      className="w-80 focus:ring-indigo-500 shadow-md focus:border-indigo-500 block pl-7 p-4 sm:text-sm border-gray-300 rounded-md"
+                      placeholder="x@y.com"
+                    />
+                    <p className="text-xs text-gray-700 mt-1">
+                      It&apos;s important to fill a correct email, otherwise the
+                      order cannot be verified. We are not storing your email
+                      anywhere
+                    </p>
+                  </div>
+                  <div className="my-2 relative rounded-md">
+                    <div className="mb-1">
+                      <label className="mb-2 font-bold">
+                        Confirmation Email
+                      </label>
+                    </div>
+                    <input
+                      type="email"
+                      name="confirmationEmail"
+                      id="confirmationEmail"
+                      value={order.confirmEmail}
+                      onChange={(e) => {
+                        const confirmEmail = e.target.value.trim();
+                        setOrder({
+                          ...order,
+                          confirmEmail,
+                        });
+                      }}
+                      className="w-80 focus:ring-indigo-500 shadow-md focus:border-indigo-500 block pl-7 p-4 sm:text-sm border-gray-300 rounded-md"
+                      placeholder="x@y.com"
+                    />
+                  </div>
+                </>
+              )}
+              <div className="text-xs text-gray-700 flex mt-5">
                 <label className="flex items-center mr-2">
                   <input
                     type="checkbox"
