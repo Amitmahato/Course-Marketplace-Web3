@@ -1,8 +1,10 @@
 // Run test with `truffle test`
 
 const { catchRevert } = require("./utils/exception");
-
 const CourseMarketplace = artifacts.require("CourseMarketplace");
+
+const getBalance = async (address) => await web3.eth.getBalance(address);
+const toBN = (value) => web3.utils.toBN(value);
 
 contract("CourseMarketplace", (accounts) => {
   const courseId = "0x00000000000000000000000000003130";
@@ -237,7 +239,27 @@ contract("CourseMarketplace", (accounts) => {
     it("should be able repurchase the course by the original buyer", async () => {
       const exptectedState = 0;
 
-      await _contract.repurchaseCourse(courseHash, { from: buyer, value });
+      const balanceBeforeTransaction = await getBalance(buyer);
+
+      const result = await _contract.repurchaseCourse(courseHash, {
+        from: buyer,
+        value,
+      });
+
+      const transaction = await web3.eth.getTransaction(result.tx);
+      const gasPrice = transaction.gasPrice;
+      const gasUsed = result.receipt.gasUsed;
+
+      const gasFee = toBN(gasPrice).mul(toBN(gasUsed));
+
+      const balanceAfterTransaction = await getBalance(buyer);
+
+      assert.equal(
+        toBN(balanceBeforeTransaction).sub(toBN(value)).sub(gasFee).toString(),
+        balanceAfterTransaction,
+        "Buyer balance should not be same before & after purchasing the course"
+      );
+
       const course = await _contract.getCourseByHash(courseHash);
 
       assert.equal(
