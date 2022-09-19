@@ -5,6 +5,10 @@ const CourseMarketplace = artifacts.require("CourseMarketplace");
 
 const getBalance = async (address) => await web3.eth.getBalance(address);
 const toBN = (value) => web3.utils.toBN(value);
+const getGasFee = async (result) => {
+  const transaction = await web3.eth.getTransaction(result.tx);
+  return toBN(transaction.gasPrice).mul(toBN(result.receipt.gasUsed));
+};
 
 contract("CourseMarketplace", (accounts) => {
   const courseId = "0x00000000000000000000000000003130";
@@ -246,11 +250,7 @@ contract("CourseMarketplace", (accounts) => {
         value,
       });
 
-      const transaction = await web3.eth.getTransaction(result.tx);
-      const gasPrice = transaction.gasPrice;
-      const gasUsed = result.receipt.gasUsed;
-
-      const gasFee = toBN(gasPrice).mul(toBN(gasUsed));
+      const gasFee = await getGasFee(result);
 
       const balanceAfterTransaction = await getBalance(buyer);
 
