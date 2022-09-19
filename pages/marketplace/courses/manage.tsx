@@ -87,6 +87,17 @@ const ManageCourses = () => {
     }
   };
 
+  const deactivateCourse = async (course: IManagedCourse) => {
+    try {
+      await contract.methods.deactivateCourse(course.hash).send({
+        from: account.data,
+      });
+      managedCourses.mutate();
+    } catch (err) {
+      console.log("Failed to activate the course with error: ", err);
+    }
+  };
+
   return account.isAdmin ? (
     <>
       <MarketHeader />
@@ -119,7 +130,11 @@ const ManageCourses = () => {
                     variant="green"
                     onClick={() => activateCourse(course)}
                   />
-                  <Button title="Deactivate" variant="red" />
+                  <Button
+                    title="Deactivate"
+                    variant="red"
+                    onClick={() => deactivateCourse(course)}
+                  />
                 </div>
               )}
             </ManagedCourseCard>
