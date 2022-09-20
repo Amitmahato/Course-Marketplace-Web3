@@ -14,7 +14,7 @@ const MessageType = {
 
 enum Sizes {
   small = "sm",
-  medium = "sm",
+  medium = "md",
   large = "lg",
 }
 

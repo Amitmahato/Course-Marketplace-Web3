@@ -1,12 +1,19 @@
 import { Button } from "@components/ui/common";
-import { useState } from "react";
+import { COURSE_STATE, COURSE_STATES } from "@utils/normalize";
+import { camelCaseToTitleCaseString } from "@utils/utilityFunctions";
+import { useEffect, useState } from "react";
 
 interface ICourseFilter {
-  onSearch: (searchText: string) => void;
+  onSearch: (searchText: string, courseState: string) => void;
 }
 
 export const CourseFilter: React.FC<ICourseFilter> = ({ onSearch }) => {
   const [searchText, setSearchText] = useState<string>("");
+  const [courseState, setCourseState] = useState<string>(null);
+
+  useEffect(() => {
+    onSearch(searchText, courseState);
+  }, [courseState]);
 
   return (
     <div className="flex flex-col md:flex-row items-center my-4">
@@ -26,7 +33,7 @@ export const CourseFilter: React.FC<ICourseFilter> = ({ onSearch }) => {
         <Button
           title="Search"
           onClick={() => {
-            onSearch(searchText);
+            onSearch(searchText, courseState);
           }}
         />
       </div>
@@ -34,10 +41,28 @@ export const CourseFilter: React.FC<ICourseFilter> = ({ onSearch }) => {
         <select
           className="w-72 h-10 pl-3 pr-6 text-base placeholder-gray-600 border rounded-lg appearance-none focus:shadow-outline"
           placeholder="Regular input"
+          onChange={(e) => {
+            if (COURSE_STATES[e.target.value]) {
+              setCourseState(e.target.value);
+            } else {
+              setCourseState(null);
+            }
+          }}
+          value={courseState}
         >
-          <option>A regular sized select input</option>
-          <option>Another option</option>
-          <option>And one more</option>
+          {["all", ...Object.keys(COURSE_STATES)].map((key, index) => {
+            return (
+              <option
+                key={index}
+                value={key}
+                onChange={(event) => {
+                  console.log(event.target);
+                }}
+              >
+                {camelCaseToTitleCaseString(COURSE_STATES[key] ?? key)}
+              </option>
+            );
+          })}
         </select>
         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
           <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">

@@ -5,7 +5,7 @@ import { Button, Message } from "@components/ui/common";
 import { MessageTypes } from "@components/ui/common/message";
 import { CourseFilter, ManagedCourseCard } from "@components/ui/course";
 import { MarketHeader } from "@components/ui/marketplace";
-import { COURSE_STATE } from "@utils/normalize";
+import { COURSE_STATE, COURSE_STATES } from "@utils/normalize";
 import { isHex } from "@utils/utilityFunctions";
 import { IManagedCourse } from "interfaces/course";
 import { useEffect, useState } from "react";
@@ -109,63 +109,74 @@ const ManageCourses = () => {
     }
   }, managedCourses.data);
 
-  const onSearch = (searchText: string) => {
-    if (searchText.length === 0) {
-      setFilteredCourses(managedCourses.data || []);
+  const onSearch = (searchText: string, courseState: string) => {
+    let filtered: IManagedCourse[] = [];
+    if (searchText.length === 0 || !isHex(searchText)) {
+      filtered = managedCourses.data || [];
     } else if (isHex(searchText)) {
-      setFilteredCourses(
-        managedCourses.data?.filter((course) =>
-          course.hash.includes(searchText)
-        )
+      filtered = managedCourses.data?.filter((course) =>
+        course.hash.includes(searchText)
       );
     } else {
       console.log("Invalid course hash provided in the search input");
     }
-  };
 
-  console.log(filteredCourses);
+    if (courseState) {
+      filtered = filtered.filter(
+        (course) => course.state === COURSE_STATES[courseState]
+      );
+    }
+    setFilteredCourses(filtered);
+  };
 
   return account.isAdmin ? (
     <>
       <MarketHeader />
       <CourseFilter onSearch={onSearch} />
       <section className="grid grid-cols-1">
-        {isInitialised &&
-          filteredCourses.map((course, index) => (
-            <ManagedCourseCard course={course} key={index}>
-              <VerifyEmail
-                key={index}
-                onEmailChange={() => {
-                  const obj = { ...ownershipProved };
-                  if (obj[course.hash] !== undefined) {
-                    delete obj[course.hash];
-                    setOwnershipProved(obj);
-                  }
-                }}
-                onVerify={(email) => {
-                  verifyCourseOwnership(email, {
-                    courseHash: course.hash,
-                    proof: course.proof,
-                  });
-                }}
-                verified={ownershipProved[course.hash]}
-              />
-              {course.state === COURSE_STATE.PURCHASED && (
-                <div className="mt-2">
-                  <Button
-                    title="Activate"
-                    variant="green"
-                    onClick={() => activateCourse(course)}
-                  />
-                  <Button
-                    title="Deactivate"
-                    variant="red"
-                    onClick={() => deactivateCourse(course)}
-                  />
-                </div>
-              )}
-            </ManagedCourseCard>
-          ))}
+        {isInitialised ? (
+          filteredCourses.length > 0 ? (
+            filteredCourses.map((course, index) => (
+              <ManagedCourseCard course={course} key={index}>
+                <VerifyEmail
+                  key={index}
+                  onEmailChange={() => {
+                    const obj = { ...ownershipProved };
+                    if (obj[course.hash] !== undefined) {
+                      delete obj[course.hash];
+                      setOwnershipProved(obj);
+                    }
+                  }}
+                  onVerify={(email) => {
+                    verifyCourseOwnership(email, {
+                      courseHash: course.hash,
+                      proof: course.proof,
+                    });
+                  }}
+                  verified={ownershipProved[course.hash]}
+                />
+                {course.state === COURSE_STATE.PURCHASED && (
+                  <div className="mt-2">
+                    <Button
+                      title="Activate"
+                      variant="green"
+                      onClick={() => activateCourse(course)}
+                    />
+                    <Button
+                      title="Deactivate"
+                      variant="red"
+                      onClick={() => deactivateCourse(course)}
+                    />
+                  </div>
+                )}
+              </ManagedCourseCard>
+            ))
+          ) : (
+            <Message type={MessageTypes.warning} size="md">
+              No Courses to display
+            </Message>
+          )
+        ) : null}
       </section>
     </>
   ) : null;
