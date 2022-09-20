@@ -1,6 +1,13 @@
 import { Button } from "@components/ui/common";
+import { useState } from "react";
 
-export const CourseFilter = () => {
+interface ICourseFilter {
+  onSearch: (searchText: string) => void;
+}
+
+export const CourseFilter: React.FC<ICourseFilter> = ({ onSearch }) => {
+  const [searchText, setSearchText] = useState<string>("");
+
   return (
     <div className="flex flex-col md:flex-row items-center my-4">
       <div className="flex mr-2 relative rounded-md">
@@ -8,10 +15,20 @@ export const CourseFilter = () => {
           type="text"
           name="account"
           id="account"
+          value={searchText}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchText(value);
+          }}
           className="w-52 sm:w-96 focus:ring-indigo-500 shadow-md focus:border-indigo-500 block pl-7 p-4 sm:text-sm border-gray-300 rounded-md"
           placeholder="0x2341ab..."
         />
-        <Button title="Search" />
+        <Button
+          title="Search"
+          onClick={() => {
+            onSearch(searchText);
+          }}
+        />
       </div>
       <div className="relative text-gray-700">
         <select

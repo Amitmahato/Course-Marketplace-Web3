@@ -6,8 +6,9 @@ import { MessageTypes } from "@components/ui/common/message";
 import { CourseFilter, ManagedCourseCard } from "@components/ui/course";
 import { MarketHeader } from "@components/ui/marketplace";
 import { COURSE_STATE } from "@utils/normalize";
+import { isHex } from "@utils/utilityFunctions";
 import { IManagedCourse } from "interfaces/course";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const VerifyEmail: React.FC<{
   verified?: boolean;
@@ -98,13 +99,39 @@ const ManageCourses = () => {
     }
   };
 
+  const [filteredCourses, setFilteredCourses] = useState<IManagedCourse[]>(
+    managedCourses.data || []
+  );
+
+  useEffect(() => {
+    if (managedCourses.data) {
+      setFilteredCourses(managedCourses.data);
+    }
+  }, managedCourses.data);
+
+  const onSearch = (searchText: string) => {
+    if (searchText.length === 0) {
+      setFilteredCourses(managedCourses.data || []);
+    } else if (isHex(searchText)) {
+      setFilteredCourses(
+        managedCourses.data?.filter((course) =>
+          course.hash.includes(searchText)
+        )
+      );
+    } else {
+      console.log("Invalid course hash provided in the search input");
+    }
+  };
+
+  console.log(filteredCourses);
+
   return account.isAdmin ? (
     <>
       <MarketHeader />
-      <CourseFilter />
+      <CourseFilter onSearch={onSearch} />
       <section className="grid grid-cols-1">
         {isInitialised &&
-          managedCourses.data?.map((course, index) => (
+          filteredCourses.map((course, index) => (
             <ManagedCourseCard course={course} key={index}>
               <VerifyEmail
                 key={index}
