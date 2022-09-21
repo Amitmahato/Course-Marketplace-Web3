@@ -32,6 +32,8 @@ contract CourseMarketplace {
 
   address payable private owner;
 
+  bool public isStopped = false;
+
   constructor() {
     setContractOwner(msg.sender);
   }
@@ -62,8 +64,21 @@ contract CourseMarketplace {
     _;
   }
 
+  modifier onlyWhenRunning() {
+    require(!isStopped);
+    _;
+  }
+
   function setContractOwner(address newOwner) private {
     owner = payable(newOwner);
+  }
+
+  function stopContract() external onlyOwner {
+    isStopped = true;
+  }
+
+  function resumeContract() external onlyOwner {
+    isStopped = false;
   }
 
   function hasCourseOwnership(bytes32 courseHash) private view returns (bool) {
@@ -90,7 +105,11 @@ contract CourseMarketplace {
       - let proof = courseId-courseId (16 + 16 = 32 bytes, random value as of now)
                   = 0x0000000000000000000000000000313000000000000000000000000000003130
    */
-  function purchaseCourse(bytes16 courseId, bytes32 proof) external payable {
+  function purchaseCourse(bytes16 courseId, bytes32 proof)
+    external
+    payable
+    onlyWhenRunning
+  {
     /**
         - abi.encodePacked(courseId, msg.sender) => simply concatenates courseId & sender address together
         - keccak256 encodes the concatenated courseId & sender address to generate the final course hash
@@ -112,7 +131,11 @@ contract CourseMarketplace {
     });
   }
 
-  function repurchaseCourse(bytes32 courseHash) external payable {
+  function repurchaseCourse(bytes32 courseHash)
+    external
+    payable
+    onlyWhenRunning
+  {
     if (!isCourseCreated(courseHash)) {
       revert CourseNotFound();
     }
@@ -130,7 +153,11 @@ contract CourseMarketplace {
     course.price = msg.value;
   }
 
-  function activateCourse(bytes32 courseHash) external onlyOwner {
+  function activateCourse(bytes32 courseHash)
+    external
+    onlyWhenRunning
+    onlyOwner
+  {
     if (!isCourseCreated(courseHash)) {
       revert CourseNotFound();
     }
@@ -144,7 +171,11 @@ contract CourseMarketplace {
     }
   }
 
-  function deactivateCourse(bytes32 courseHash) external onlyOwner {
+  function deactivateCourse(bytes32 courseHash)
+    external
+    onlyWhenRunning
+    onlyOwner
+  {
     if (!isCourseCreated(courseHash)) {
       revert CourseNotFound();
     }
@@ -225,4 +256,9 @@ contract CourseMarketplace {
     // activate the course
     - await instance.activateCourse("0x54b70b6e9e56c766edcb9d5715690e437820188c9eb798fc4635e137262e30e5");
 
+    // stop the contract
+    - await instance.stopContract();
+
+    // resume the contract
+    - await instance.resumeContract();
  */
