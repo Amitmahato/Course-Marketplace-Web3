@@ -329,4 +329,30 @@ contract("CourseMarketplace", (accounts) => {
       );
     });
   });
+
+  describe("Receive Funds", () => {
+    it("should have transacted funds", async () => {
+      const contracBalanceBeforeTransaction = await getBalance(
+        _contract.address
+      );
+
+      const value = "100000000000000000"; // 0.1 ether
+
+      await web3.eth.sendTransaction({
+        from: buyer,
+        to: _contract.address,
+        value,
+      });
+
+      const contracBalanceAfterTransaction = await getBalance(
+        _contract.address
+      );
+
+      assert.equal(
+        toBN(contracBalanceBeforeTransaction).add(toBN(value)).toString(),
+        contracBalanceAfterTransaction.toString(),
+        "Contract balance after transaction should be more than the balance before transaction"
+      );
+    });
+  });
 });
