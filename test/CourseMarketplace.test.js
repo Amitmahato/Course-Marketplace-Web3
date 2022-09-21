@@ -355,4 +355,53 @@ contract("CourseMarketplace", (accounts) => {
       );
     });
   });
+
+  describe("Normal Withdraw", () => {
+    const fundsToDeposit = "100000000000000000"; // 0.1 ether
+    const overlimitFunds = "999999999999999999999"; // 0.1 ether
+
+    before(async () => {
+      await web3.eth.sendTransaction({
+        from: buyer,
+        to: _contract.address,
+        value: fundsToDeposit,
+      });
+    });
+
+    it("should fail when withdrawing into non-owner address", async () => {
+      const funds = "10000000000000000";
+      await catchRevert(_contract.withdraw(funds, { from: buyer }));
+    });
+
+    it("should fail when withdrawing overlimit balance", async () => {
+      await catchRevert(
+        _contract.withdraw(overlimitFunds, { from: contractOwner })
+      );
+    });
+
+    it("should withdraw balance from contract to the owner's account", async () => {
+      const conractOwnerBalanceBeforeTransaction = await getBalance(
+        contractOwner
+      );
+
+      const result = await _contract.withdraw(fundsToDeposit, {
+        from: contractOwner,
+      });
+
+      const gasFee = await getGasFee(result);
+
+      const conractOwnerBalanceAfterTransaction = await getBalance(
+        contractOwner
+      );
+
+      assert.equal(
+        toBN(conractOwnerBalanceBeforeTransaction)
+          .add(toBN(fundsToDeposit))
+          .sub(gasFee)
+          .toString(),
+        conractOwnerBalanceAfterTransaction.toString(),
+        "Contract owner balance should increase after withdrawing ethers from contract"
+      );
+    });
+  });
 });
