@@ -69,6 +69,11 @@ contract CourseMarketplace {
     _;
   }
 
+  modifier onlyWhenStopped() {
+    require(isStopped);
+    _;
+  }
+
   function setContractOwner(address newOwner) private {
     owner = payable(newOwner);
   }
@@ -79,6 +84,43 @@ contract CourseMarketplace {
 
   function resumeContract() external onlyOwner {
     isStopped = false;
+  }
+
+  /**
+     Simply defining the `receive` pre-existing function will allow sending ether to the contract, 
+     absence of this won't allow contract to receive any ether
+   */
+  receive() external payable {}
+
+  /**
+    Owner can withdraw the desired amount to their account
+   */
+  function withdraw(uint256 amount) external onlyOwner {
+    (bool success, ) = owner.call{value: amount}("");
+    require(
+      success,
+      "Transfer of ether from the contract to the contract owner account failed"
+    );
+  }
+
+  /**
+    Emergency withdraw of all the contract's balance to the owner's account is allowed only when the contract is already stopped
+   */
+  function emergencyWithdraw() external onlyWhenStopped onlyOwner {
+    (bool success, ) = owner.call{value: address(this).balance}("");
+    require(
+      success,
+      "Transfer of ether from the contract to the contract owner account failed"
+    );
+  }
+
+  /**
+    This will self destruct the contract and 
+    transfer the balance of the contract to the address provided, 
+    which here is the address of the contract owner
+   */
+  function selfDestruct() external onlyWhenStopped onlyOwner {
+    selfdestruct(owner);
   }
 
   function hasCourseOwnership(bytes32 courseHash) private view returns (bool) {
@@ -261,4 +303,16 @@ contract CourseMarketplace {
 
     // resume the contract
     - await instance.resumeContract();
+
+    // withdraw 1 ether from the contract to the owner's account 
+    // Can be called only by the owner
+    - await instance.withdraw("1000000000000000000");
+
+    // emergency withdraw all balance from the contract to the owner's account 
+    // only allowed when the contract is stopped and can be called only by the owner
+    - await instance.emergencyWithdraw();
+
+    // destroy the smart contract and transfer all tha balance to owner's account
+    // only allowed when the contract is stopped and can be called only by the owner
+    - await instance.selfDestruct();
  */
