@@ -441,7 +441,7 @@ contract("CourseMarketplace", (accounts) => {
 
       const ownerBalanceAfterTransaction = await getBalance(currentOwner);
 
-      assert(
+      assert.equal(
         toBN(ownerBalanceBeforeTransaction)
           .sub(gasFee)
           .add(toBN(contractBalanceBeforeTransaction))
@@ -452,14 +452,84 @@ contract("CourseMarketplace", (accounts) => {
     });
 
     it("should have the balance of the contract made zero", async () => {
-      const contractBalance = await getBalance(
-        _contract.address
-      );
+      const contractBalance = await getBalance(_contract.address);
 
-      assert(
+      assert.equal(
         contractBalance,
         0,
         "Contract balance after transfering all funds to contract owner should become zero"
+      );
+    });
+  });
+
+  describe("Contract Self Destruct", () => {
+    const fundsToDeposit = "100000000000000000"; // 0.1 ether
+    let currentOwner = null;
+
+    before(async () => {
+      await web3.eth.sendTransaction({
+        from: buyer,
+        to: _contract.address,
+        value: fundsToDeposit,
+      });
+      currentOwner = await _contract.getContractOwner();
+    });
+
+    it("should fail to destroy the contract when contract is not already stopped", async () => {
+      await catchRevert(_contract.selfDestruct({ from: currentOwner }));
+    });
+
+    it("should stop the contract", async () => {
+      await _contract.stopContract({ from: currentOwner });
+    });
+
+    it("should not have the code 0x before the contract is destroyed", async () => {
+      const code = await web3.eth.getCode(_contract.address);
+
+      assert(
+        code !== "0x",
+        "Contract should have the byte code not equal to 0x"
+      );
+    });
+
+    it("should destroy the contract and transfer the funds in the contract to the onwner", async () => {
+      const ownerBalanceBeforeTransaction = await getBalance(currentOwner);
+      const contractBalanceBeforeTransaction = await getBalance(
+        _contract.address
+      );
+
+      const reesult = await _contract.selfDestruct({ from: currentOwner });
+      const gasFee = await getGasFee(reesult);
+
+      const ownerBalanceAfterTransaction = await getBalance(currentOwner);
+
+      assert.equal(
+        toBN(ownerBalanceBeforeTransaction)
+          .sub(gasFee)
+          .add(toBN(contractBalanceBeforeTransaction))
+          .toString(),
+        toBN(ownerBalanceAfterTransaction).toString(),
+        "Owner balance should increase by the amount of contract balance"
+      );
+    });
+
+    it("should have the balance of the contract made zero", async () => {
+      const contractBalance = await getBalance(_contract.address);
+
+      assert.equal(
+        contractBalance,
+        0,
+        "Contract balance after transfering all funds to contract owner should become zero"
+      );
+    });
+
+    it("should have the code 0x after contract is destroyed", async () => {
+      const code = await web3.eth.getCode(_contract.address);
+
+      assert.equal(
+        code,
+        "0x",
+        "Contract should have been destroyed but it doesn't seem so"
       );
     });
   });
