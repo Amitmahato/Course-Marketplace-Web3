@@ -404,4 +404,63 @@ contract("CourseMarketplace", (accounts) => {
       );
     });
   });
+
+  describe("Emergency Withdraw", () => {
+    const fundsToDeposit = "100000000000000000"; // 0.1 ether
+    let currentOwner = null;
+
+    before(async () => {
+      await web3.eth.sendTransaction({
+        from: buyer,
+        to: _contract.address,
+        value: fundsToDeposit,
+      });
+      currentOwner = await _contract.getContractOwner();
+    });
+
+    after(async () => {
+      await _contract.resumeContract({ from: currentOwner });
+    });
+
+    it("should fail when contract is not stopped first", async () => {
+      await catchRevert(_contract.emergencyWithdraw({ from: currentOwner }));
+    });
+
+    it("should stop the contract", async () => {
+      await _contract.stopContract({ from: currentOwner });
+    });
+
+    it("should successfully withdraw all the balances to contract owner", async () => {
+      const ownerBalanceBeforeTransaction = await getBalance(currentOwner);
+      const contractBalanceBeforeTransaction = await getBalance(
+        _contract.address
+      );
+
+      const reesult = await _contract.emergencyWithdraw({ from: currentOwner });
+      const gasFee = await getGasFee(reesult);
+
+      const ownerBalanceAfterTransaction = await getBalance(currentOwner);
+
+      assert(
+        toBN(ownerBalanceBeforeTransaction)
+          .sub(gasFee)
+          .add(toBN(contractBalanceBeforeTransaction))
+          .toString(),
+        toBN(ownerBalanceAfterTransaction).toString(),
+        "Owner balance should increase by the amount of contract balance"
+      );
+    });
+
+    it("should have the balance of the contract made zero", async () => {
+      const contractBalance = await getBalance(
+        _contract.address
+      );
+
+      assert(
+        contractBalance,
+        0,
+        "Contract balance after transfering all funds to contract owner should become zero"
+      );
+    });
+  });
 });
