@@ -17,7 +17,7 @@ module.exports = {
           mnemonic: {
             phrase: keys.mnemonic,
           },
-          providerOrUrl: `https://ropsten.infura.io/v3/${keys.infura_project_id}`,
+          providerOrUrl: `wss://ropsten.infura.io/ws/v3/${keys.infura_project_id}`,
 
           /**
            * Deployer Account at index 0, as defined by the `mnemonic` - `secret recovery passphrase`,
