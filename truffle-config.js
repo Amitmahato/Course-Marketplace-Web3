@@ -56,3 +56,18 @@ module.exports = {
 
 // Expenditure to deploy the contract
 // 5500000 * 20000000000 = 110000000000000000 Wei = 0.11 ETH => 141.60 USD as of `Sep 22, 2022`
+
+// BASE FEE (determined by ethereum) => 39.791392694
+// Max Priority Fee Per Gas(tip) => 2
+// GAS PRICE = BASE FEE + TIP => 41.791392694
+
+// GAS USED 21000
+
+// Transaction Fee = GAS USED * GAS PRICE =
+//                   41.791392694 * 21000
+
+// BURNT FEE => BASE FEE * GAS USED
+//           39.791392694 * 21000
+
+// REST TO MINER => TIP * GAS USED
+//                   2  * 21000
