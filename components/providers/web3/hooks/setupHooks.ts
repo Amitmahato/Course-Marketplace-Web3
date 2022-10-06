@@ -1,5 +1,6 @@
 import { IHooks } from "interfaces/hooks";
-import Web3, { Contract } from "web3";
+import Web3 from "web3";
+import { Contract } from "web3-eth-contract";
 import { handler as createUseAccount } from "./useAccount";
 import { handler as createNetworkHook } from "./useNetwork";
 import { handler as createOwnedCoursesHook } from "./useOwnedCourses";

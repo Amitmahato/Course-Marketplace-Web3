@@ -3,7 +3,8 @@ import { IManagedCourse } from "interfaces/course";
 import { IAccount } from "interfaces/hooks/useAccount";
 import { IUseManagedCourses } from "interfaces/hooks/useManagedCourses";
 import useSWR from "swr";
-import Web3, { Contract } from "web3";
+import Web3 from "web3";
+import { Contract } from "web3-eth-contract";
 
 export const handler =
   (web3: Web3, contract: Contract) =>

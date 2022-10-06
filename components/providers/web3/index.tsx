@@ -5,7 +5,10 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import Web3, { Contract, Provider } from "web3";
+import Web3 from "web3";
+import { provider } from "web3-core";
+import { Contract } from "web3-eth-contract";
+
 import detectEthereumProvider from "@metamask/detect-provider";
 import { IHooks } from "interfaces/hooks";
 import { setupHooks } from "./hooks/setupHooks";
@@ -13,7 +16,7 @@ import { loadContract } from "@utils/loadContract";
 
 interface IWeb3ContextState {
   web3: Web3;
-  provider: Provider;
+  provider: provider;
   contract: Contract;
   isLoading: boolean;
   hooks: IHooks;
@@ -62,12 +65,12 @@ const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const loadProvider = async () => {
       const provider = await detectEthereumProvider();
       if (provider) {
-        const web3 = new Web3(provider);
+        const web3 = new Web3(provider as provider);
         const contract = await loadContract("CourseMarketplace", web3);
         setWeb3Api(
           createWeb3State({
             web3,
-            provider,
+            provider: provider as provider,
             contract,
             isLoading: false,
           })

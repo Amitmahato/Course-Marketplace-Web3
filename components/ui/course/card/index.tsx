@@ -9,7 +9,7 @@ interface ICourse {
   course: course;
   disabled?: boolean;
   Footer?: React.JSXElementConstructor<any>;
-  courseState: COURSE_STATE;
+  courseState?: COURSE_STATE;
 }
 
 const List: React.FC<ICourse> = ({
