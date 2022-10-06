@@ -30,7 +30,6 @@ export const handler = (web3: Web3, provider: any) => (): IUseAccount => {
   }, [provider]);
 
   const isAdmin = data ? adminAddress[web3.utils.keccak256(data)] : false;
-  debugger;
   return {
     account: {
       data,
