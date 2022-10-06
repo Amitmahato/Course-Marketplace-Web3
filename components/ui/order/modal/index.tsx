@@ -70,7 +70,6 @@ const OrderModal: React.FC<IModal> = ({
   course,
   newPurchase,
 }) => {
-  console.log(newPurchase);
   const [_open, setOpen] = useState(open);
   const { courseEthRate } = useEthPrice();
   const [adjustPrice, setAdjustPrice] = useState(false);

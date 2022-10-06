@@ -9,6 +9,7 @@ import { MarketHeader } from "@components/ui/marketplace";
 import { useWeb3 } from "@components/providers";
 import { useOwnedCourses } from "@components/hooks/web3/useOwnedCourses";
 import { COURSE_STATE } from "@utils/normalize";
+import { withToast } from "@utils/toast";
 
 export default function Marketplace({ courses }) {
   const { canPurchaseCourse, account } = useWalletInfo();
@@ -67,13 +68,11 @@ export default function Marketplace({ courses }) {
           from: account.data,
           value,
         });
-      console.log(
-        "Course purchased successfully! Transaction details: ",
-        result
-      );
+      return result;
     } catch (e) {
       // will fail you same user tries to purchase any given course twice
       console.log("Failed to purcahse course! Error: ", e);
+      throw new Error(e?.message);
     }
   };
 
@@ -96,12 +95,10 @@ export default function Marketplace({ courses }) {
         from: account.data,
         value,
       });
-      console.log(
-        "Course re-purchased successfully! Transaction details: ",
-        result
-      );
+      return result;
     } catch (e) {
       console.log("Failed to re-purcahse course! Error: ", e);
+      throw new Error(e.message);
     }
   };
 
@@ -178,9 +175,9 @@ export default function Marketplace({ courses }) {
           }}
           onSubmit={(order: IOrderState) => {
             if (newPurchase) {
-              purchaseCourse(order);
+              withToast(purchaseCourse(order));
             } else {
-              repurchaseCourse(order);
+              withToast(repurchaseCourse(order));
             }
             setNewPurchase(true);
             setSelectedCourse(null);

@@ -52,13 +52,7 @@ export const CourseFilter: React.FC<ICourseFilter> = ({ onSearch }) => {
         >
           {["all", ...Object.keys(COURSE_STATES)].map((key, index) => {
             return (
-              <option
-                key={index}
-                value={key}
-                onChange={(event) => {
-                  console.log(event.target);
-                }}
-              >
+              <option key={index} value={key}>
                 {camelCaseToTitleCaseString(COURSE_STATES[key] ?? key)}
               </option>
             );
