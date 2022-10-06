@@ -6,6 +6,7 @@ import { MessageTypes } from "@components/ui/common/message";
 import { CourseFilter, ManagedCourseCard } from "@components/ui/course";
 import { MarketHeader } from "@components/ui/marketplace";
 import { COURSE_STATE, COURSE_STATES } from "@utils/normalize";
+import { withToast } from "@utils/toast";
 import { isHex } from "@utils/utilityFunctions";
 import { IManagedCourse } from "interfaces/course";
 import { useEffect, useState } from "react";
@@ -79,23 +80,27 @@ const ManageCourses = () => {
 
   const activateCourse = async (course: IManagedCourse) => {
     try {
-      await contract.methods.activateCourse(course.hash).send({
+      const result = await contract.methods.activateCourse(course.hash).send({
         from: account.data,
       });
       managedCourses.mutate();
+      return result;
     } catch (err) {
       console.log("Failed to activate the course with error: ", err);
+      throw new Error(err.message);
     }
   };
 
   const deactivateCourse = async (course: IManagedCourse) => {
     try {
-      await contract.methods.deactivateCourse(course.hash).send({
+      const result = await contract.methods.deactivateCourse(course.hash).send({
         from: account.data,
       });
       managedCourses.mutate();
+      return result;
     } catch (err) {
       console.log("Failed to activate the course with error: ", err);
+      throw new Error(err.message);
     }
   };
 
@@ -160,12 +165,12 @@ const ManageCourses = () => {
                     <Button
                       title="Activate"
                       variant="green"
-                      onClick={() => activateCourse(course)}
+                      onClick={() => withToast(activateCourse(course))}
                     />
                     <Button
                       title="Deactivate"
                       variant="red"
-                      onClick={() => deactivateCourse(course)}
+                      onClick={() => withToast(deactivateCourse(course))}
                     />
                   </div>
                 )}

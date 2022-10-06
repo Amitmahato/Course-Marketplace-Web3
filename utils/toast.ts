@@ -10,7 +10,9 @@ export const withToast = (promise: Promise<any>) => {
     },
     success: {
       render({ data }) {
-        return `Tx: ${data.transactionHash.slice(0, 20)}...
+        return process.env.NODE_ENV !== "production"
+          ? "Transaction has been successfully processed"
+          : `Tx: ${data.transactionHash.slice(0, 20)}...
         Has been successfully processed.
         See Tx Details at: https://goerli.etherscan.io/tx/${
           data.transactionHash
