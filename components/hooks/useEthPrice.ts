@@ -31,7 +31,7 @@ export const COURSE_PRICE = 15;
 export const useEthPrice = (): IUseEthPrice => {
   const swrResponse = useSWR(
     "eth-price",
-    () => fetcher(EXTERNAL_SOURCES.ETHER_SCAN),
+    () => fetcher(EXTERNAL_SOURCES.COIN_GEKO),
     {
       refreshInterval: 10000,
     }
