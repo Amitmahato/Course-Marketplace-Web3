@@ -143,15 +143,13 @@ const OrderModal: React.FC<IModal> = ({
                   disabled={!adjustPrice}
                   onChange={(e) => {
                     const value = e.target.value;
-                    const price = Number(value);
-                    if (!isNaN(price)) {
-                      setOrder({
-                        ...order,
-                        price: price,
-                      });
-                    }
+                    const price = parseFloat(value);
+                    setOrder({
+                      ...order,
+                      price,
+                    });
                   }}
-                  type="text"
+                  type="number"
                   name="price"
                   id="price"
                   className="disabled:opacity-50 w-80 mb-1 focus:ring-indigo-500 shadow-md focus:border-indigo-500 block pl-7 p-4 sm:text-sm border-gray-300 rounded-md"
